@@ -6,7 +6,11 @@ const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 const config = {
     // 入口文件
     entry: {
-        app: './src/app.js'
+        app: './src/app.js',
+        vendor: [
+            'react',
+            'react-dom',
+        ]
     },
     // 出口文件
     output: {
@@ -64,7 +68,7 @@ const config = {
 
 if (process.env.npm_lifecycle_event === 'build') {
     console.log('building..............')
-    config.plugins.concat([
+    config.plugins = config.plugins.concat([
         new webpack.DefinePlugin({
             'process.env': {
                 'NODE_ENV': '"production"'
