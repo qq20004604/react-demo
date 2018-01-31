@@ -1,0 +1,19 @@
+.splitLine {
+    width: 100%;
+    border: 1px solid red;
+    margin-top: 30px;
+    margin-bottom: 30px;
+}
+
+#table {
+    border-collapse: collapse;
+}
+
+#table thead td {
+    text-align: center;
+}
+
+#table th, #table td {
+    border: 1px solid #000;
+    text-align: right;
+}

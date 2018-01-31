@@ -1,8 +1,9 @@
 ﻿// 引入插件
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const webpack = require('webpack')
+const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 
-module.exports = {
+const config = {
     // 入口文件
     entry: {
         app: './src/app.js'
@@ -31,7 +32,14 @@ module.exports = {
                 test: /\.css$/,
                 use: [
                     'style-loader',
-                    'css-loader'
+                    {
+                        loader: 'css-loader',
+                        options: {
+                            modules: true,
+                            minimize: true,
+                            sourceMap: true
+                        }
+                    }
                 ]
             }
         ]
@@ -46,6 +54,27 @@ module.exports = {
         }),
         // HMR 需要的两个插件
         new webpack.NamedModulesPlugin(),
-        new webpack.HotModuleReplacementPlugin()
-    ]
+        new webpack.HotModuleReplacementPlugin(),
+    ],
+    resolve: {
+        // 省略后缀名
+        extensions: ['.js']
+    }
 }
+
+if (process.env.npm_lifecycle_event === 'build') {
+    console.log('building..............')
+    config.plugins.concat([
+        new webpack.DefinePlugin({
+            'process.env': {
+                'NODE_ENV': '"production"'
+            }
+        }),
+        new webpack.optimize.CommonsChunkPlugin({
+            names: ['vendor']
+        }),
+        new UglifyJSPlugin()
+    ])
+}
+
+module.exports = config
