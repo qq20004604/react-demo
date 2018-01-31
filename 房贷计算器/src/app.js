@@ -26,6 +26,7 @@ class MyDemo extends React.Component {
 
     render() {
         return <div>
+            <h1>等额本金房贷还款计算器</h1>
             <InputArea ref={component => this.inputArea = component}></InputArea>
 
             <button onClick={this.getValue}>开始计算结果</button>
