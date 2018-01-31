@@ -17,3 +17,8 @@
     border: 1px solid #000;
     text-align: right;
 }
+
+b {
+    font-weight: bold;
+    color: red;
+}
