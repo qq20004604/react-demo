@@ -1,3 +1,11 @@
-#input-area .input-area-i {
+#input-area .input {
+    text-align: right;
+}
+
+#input-area .select {
+    width: 173px;
+}
+
+#input-area .select option {
     text-align: right;
 }

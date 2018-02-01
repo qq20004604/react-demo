@@ -1860,7 +1860,30 @@ class RefsDemo extends React.Component {
 
 
 
-<h3>24、</h3>
+<h3>24、包裹标签 React.Fragment</h3>
+
+在 Vue 里，我们会用 ``<template></template>`` 标签来包裹一些不能有父容器的复数同级标签。
+
+例如在 ``<tbody></tbody>`` 标签中，我们只能放置 ``<tr></tr>``标签，假如我们同时有多个 ``<tr>`` 标签被赋值给一个 JSX 变量，那么在 React 里也有类似的功能：``<React.Fragment>`` 标签。
+
+示例：
+
+```
+let DOM = (<React.Fragment>
+    <tr>
+        <td>1</td>
+    </tr>
+    <tr>
+        <td>2</td>
+    </tr>
+</React.Fragment>)
+
+let Component = <table>
+    <tbody>
+    {DOM}
+    </tbody>
+</table>
+```
 
 <h3>25、</h3>
 

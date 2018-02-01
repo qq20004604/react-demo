@@ -53,6 +53,7 @@ const config = {
     plugins: [
         // html 源文件
         new HtmlWebpackPlugin({
+            title: '等额本金房贷还款计算器',
             chunks: 'app',
             template: `./index.html`
         }),
