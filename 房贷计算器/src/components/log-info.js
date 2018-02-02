@@ -9,10 +9,12 @@ export default class LogInfo extends React.Component {
     render() {
         let props = this.props.result
         let noValue = <p>尚未开始计算</p>
+        console.log(props)
+        let downPayment = props.totalType === 'totalPrice' ? (<p>
+            首付：{props.downPayment}元（以下还款不会计算首付，只计算还贷金额）
+        </p>) : null
         let hasValue = <div>
-            <p>
-                首付：{props.downPayment}元（以下还款不会计算首付，只计算还贷金额）
-            </p>
+            {downPayment}
             <p>
                 需还本金：{props.totalWithoutDownPayment.toFixed(2)}元，总计还款：{props.totalPay.toFixed(2)}元，计算CPI后总计还款：{props.totalPayWithCPI.toFixed(2)}元
             </p>
@@ -23,6 +25,6 @@ export default class LogInfo extends React.Component {
                 CPI年均通货膨胀：{props.CPI * 100}％
             </p>
         </div>
-        return props.downPayment ? hasValue : noValue
+        return props.totalWithoutDownPayment ? hasValue : noValue
     }
 }

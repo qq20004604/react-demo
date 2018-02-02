@@ -1,5 +1,5 @@
 import React from "react";
-import style from './css/main.css';
+import style from '../css/main.css';
 
 /**
  * Created by 王冬 on 2018/1/31.

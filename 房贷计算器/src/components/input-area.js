@@ -4,45 +4,16 @@
  * weChat: qq20004604
  */
 import React from 'react';
-import style from './css/input-area.css';
-
-class InputTRComponent extends React.Component {
-    render() {
-        return (<tr>
-            <td>{this.props.name}：</td>
-            <td>
-                <input className={style['input-area-i']}
-                       value={this.props.value}
-                       onChange={e => this.props.changeValue(this.props.keyword, e)}/> <b>{this.props.unit}</b>
-            </td>
-        </tr>)
-    }
-}
-
-class OptionsTRComponent extends React.Component {
-    render() {
-        return (<tr>
-            <td>{this.props.name}：</td>
-            <td>
-                <select className={style.select}
-                        value={this.props.value}
-                        onChange={e => this.props.changeValue(this.props.keyword, e)}>
-                    {/* 通过 array 生成 option 列表，值是 value，文字是 name */}
-                    {this.props.array.map(obj => {
-                        return (<option value={obj.value} key={obj.value}>{obj.name}</option>)
-                    })}
-                </select>
-            </td>
-        </tr>)
-    }
-}
+import style from '../css/input-area.css';
+import {InputTRComponent, OptionsTRComponent} from './form-elements'
 
 export default class InputArea extends React.Component {
     constructor() {
         super()
         this.state = {
-            totalPrice: '100',
-            firstPay: 0.3,
+            totalPrice: '100',  // 房贷总计
+            firstPay: 0.3,  // 首付比例
+            loan: '100',    // 贷款总额度（与上面2个互斥）
             annualInterestRate: '6',
             totalYear: '30',
             CPI: '3',
@@ -79,6 +50,13 @@ export default class InputArea extends React.Component {
                                 array={this.list.firstPay}></OptionsTRComponent>
         </React.Fragment>)
 
+        let loanType = (
+            <InputTRComponent name="贷款总计"
+                              value={this.state.loan}
+                              changeValue={this.changeValue}
+                              keyword='loan'
+                              unit='万'></InputTRComponent>
+        )
 
         return (
             <table id={style['input-area']}>
@@ -102,7 +80,7 @@ export default class InputArea extends React.Component {
                 </tr>
                 {
                     this.state.totalType === 'totalPrice' ?
-                        totalPriceType : null
+                        totalPriceType : loanType
 
                 }
                 <InputTRComponent name="年利率"
@@ -138,6 +116,17 @@ export default class InputArea extends React.Component {
     }
 
     getState() {
-        return this.state
+        let {annualInterestRate, totalYear, CPI, totalType} = this.state
+        if (this.state.totalType === 'totalPrice') {
+            let {totalPrice, firstPay} = this.state
+            return {
+                totalPrice, firstPay, annualInterestRate, totalYear, CPI, totalType
+            }
+        } else {
+            let {loan} = this.state
+            return {
+                loan, annualInterestRate, totalYear, CPI, totalType
+            }
+        }
     }
 }
