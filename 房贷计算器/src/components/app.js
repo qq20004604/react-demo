@@ -4,6 +4,7 @@ import InputArea from './input-area';
 import LogInfo from './log-info'
 import createTable from './table'
 import style from '../css/main.css';
+import Charts from './charts';
 
 
 let tableInfo = {
@@ -103,7 +104,6 @@ class MyDemo extends React.Component {
                        checked={this.state.billingMethod === 'computedPrincipalInterest'}
                        onChange={this.changeBillingMethod}/>
             </label>
-
             <InputArea ref={component => this.inputArea = component}></InputArea>
 
             <button onClick={this.getValue}>开始计算结果</button>
@@ -111,6 +111,7 @@ class MyDemo extends React.Component {
             <div className={style.splitLine}></div>
 
             <LogInfo result={this.state}/>
+            <Charts value={this.state.resultList}></Charts>
             <Table data={this.state.resultList.length > 0 ? this.state.resultList : []}></Table>
         </div>
     }
