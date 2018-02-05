@@ -1,9 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import InputArea from './input-area';
-import style from '../css/main.css';
 import LogInfo from './log-info'
 import Table from './table'
+import style from '../css/main.css';
 
 
 class MyDemo extends React.Component {
@@ -43,7 +43,7 @@ class MyDemo extends React.Component {
             totalPay: 0,   // 累计还款（含利息）
             totalPayWithCPI: 0,    // 计算CPI后，累计还款
             totalInterest: 0,  // 利息总计
-            yearInterestRate: value.annualInterestRate * 0.01,   // 年利率
+            totalInterestRate: value.annualInterestRate * 0.01,   // 年利率
             years: value.totalYear,  // 总计年数
             CPI: value.CPI * 0.01, // CPI年均通货膨胀
             totalType: value.totalType
@@ -72,7 +72,7 @@ class MyDemo extends React.Component {
     computingByEqualPrincipal(value) {
         let totalWithoutDownPayment = value.totalWithoutDownPayment;   // 需还本金
         let totalWithoutDownPaymentLeft = totalWithoutDownPayment; // 待还本金
-        let monthInterestRate = value.yearInterestRate / 12;  // 月利率
+        let monthInterestRate = value.totalInterestRate / 12;  // 月利率
         let totalRepayment = 0;    // 累计还
         let repaymentPerMonth = totalWithoutDownPayment / value.years / 12;  // 月还本金
         let CPI = 1 // 基准CPI
@@ -116,7 +116,7 @@ class MyDemo extends React.Component {
     computedPrincipalInterest(value) {
         let totalWithoutDownPayment = value.totalWithoutDownPayment;   // 需还本金
         let totalWithoutDownPaymentLeft = totalWithoutDownPayment; // 待还本金
-        let monthInterestRate = value.yearInterestRate / 12;  // 月利率
+        let monthInterestRate = value.totalInterestRate / 12;  // 月利率
         let i = Math.pow((1 + monthInterestRate), value.years * 12)
         let repaymentPerMonth = totalWithoutDownPayment * monthInterestRate * i / (i - 1);  // 月还金额（每个月一样）
         let totalRepayment = 0
