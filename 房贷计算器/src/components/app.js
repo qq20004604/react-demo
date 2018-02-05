@@ -2,12 +2,71 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import InputArea from './input-area';
 import LogInfo from './log-info'
-import Table from './table'
+import createTable from './table'
 import style from '../css/main.css';
 
 
+let tableInfo = {
+    tds: [
+        {
+            headContent: function () {
+                return <td key='year'>年月</td>
+            },
+            bodyContent: function (data, index) {
+                return <td key={index}>{data.year}年{data.month}月</td>
+            }
+        },
+        {
+            headContent: '本月还',
+            bodyContent: function (data, index) {
+                return <td key={index}>{data.payThisMonth}</td>
+            }
+        },
+        {
+            headContent: <td key={'还款'}>还款组成<br/>[本金 + 利息]</td>,
+            bodyContent: function (data, index) {
+                return <td key={index} style={{textAlign: 'left'}}>本金：{data.repaymentPerMonth}<br/>
+                    利息：{data.interest}</td>
+            }
+        },
+        {
+            headContent: '剩余待还本金',
+            bodyContent: function (data, index) {
+                return <td key={index}>{data.totalWithoutDownPaymentLeft}</td>
+            }
+        },
+        {
+            headContent: '累计还了',
+            bodyContent: function (data, index) {
+                return <td key={index}>{data.totalRepayment}</td>
+            }
+        },
+        {
+            headContent: <td key='cpi'>当前CPI通胀系数<br/>（相较第一年）</td>,
+            bodyContent: function (data, index) {
+                return <td key={index}>{data.CPI}</td>
+            }
+        },
+        {
+            headContent: '计算CPI后当月还款价值',
+            bodyContent: function (data, index) {
+                return <td key={index}>{data.payThisMonthByCPI}</td>
+            }
+        },
+        {
+            headContent: '计算CPI后已累计还款数',
+            bodyContent: function (data, index) {
+                return <td key={index}>{data.totalByCPI}</td>
+            }
+        }
+    ],
+    tableId: style.table,
+    tbodyId: 'tbody'
+}
+let Table = createTable(tableInfo)
+
 class MyDemo extends React.Component {
-    constructor() {
+    constructor () {
         super()
         this.state = {
             downPayment: 0,    // 首付
@@ -18,14 +77,33 @@ class MyDemo extends React.Component {
             totalInterestRate: 0,   // 年利率
             years: 0,  // 总计年数
             CPI: 0, // CPI年均通货膨胀
-            resultList: []
+            resultList: [],
+            billingMethod: 'computingByEqualPrincipal'
+            // 等额本金还款计算方式 computingByEqualPrincipal, 等额本息 computedPrincipalInterest
         }
         this.getValue = this.getValue.bind(this)
+        this.changeBillingMethod = this.changeBillingMethod.bind(this)
     }
 
-    render() {
+    render () {
         return <div>
-            <h1>等额本金房贷还款计算器</h1>
+            <h1>{this.state.billingMethod === 'computingByEqualPrincipal' ?
+                '等额本金房贷还款计算器' : '等额本息房贷还款计算器'}</h1>
+
+            <label>
+                【等额本金】还款计算方式
+                <input type="radio" name="billingMethod" value="computingByEqualPrincipal"
+                       checked={this.state.billingMethod === 'computingByEqualPrincipal'}
+                       onChange={this.changeBillingMethod}/>
+            </label>
+            <span style={{display: 'inline-block', width: '30px'}}></span>
+            <label>
+                【等额本息】还款计算方式
+                <input type="radio" name="billingMethod" value="computedPrincipalInterest"
+                       checked={this.state.billingMethod === 'computedPrincipalInterest'}
+                       onChange={this.changeBillingMethod}/>
+            </label>
+
             <InputArea ref={component => this.inputArea = component}></InputArea>
 
             <button onClick={this.getValue}>开始计算结果</button>
@@ -37,7 +115,7 @@ class MyDemo extends React.Component {
         </div>
     }
 
-    getValue() {
+    getValue () {
         let value = this.inputArea.getState()
         let state = {
             totalPay: 0,   // 累计还款（含利息）
@@ -55,7 +133,9 @@ class MyDemo extends React.Component {
             state.totalWithoutDownPayment = value.loan * 10000
         }
         // 等额本金还款计算结果
-        let result = this.computingByEqualPrincipal(state)
+        let result = (this.state.billingMethod === 'computingByEqualPrincipal') ?
+            this.computingByEqualPrincipal(state) :
+            this.computedPrincipalInterest(state)
         // let result = this.computedPrincipalInterest(state)
         Object.assign(state, result.totalInfo)
         Object.keys(state).forEach(key => {
@@ -69,7 +149,7 @@ class MyDemo extends React.Component {
     }
 
     // 等额本金还款计算方式
-    computingByEqualPrincipal(value) {
+    computingByEqualPrincipal (value) {
         let totalWithoutDownPayment = value.totalWithoutDownPayment;   // 需还本金
         let totalWithoutDownPaymentLeft = totalWithoutDownPayment; // 待还本金
         let monthInterestRate = value.totalInterestRate / 12;  // 月利率
@@ -113,7 +193,7 @@ class MyDemo extends React.Component {
     }
 
     // 等额本息计算法
-    computedPrincipalInterest(value) {
+    computedPrincipalInterest (value) {
         let totalWithoutDownPayment = value.totalWithoutDownPayment;   // 需还本金
         let totalWithoutDownPaymentLeft = totalWithoutDownPayment; // 待还本金
         let monthInterestRate = value.totalInterestRate / 12;  // 月利率
@@ -153,6 +233,13 @@ class MyDemo extends React.Component {
             totalInfo,
             array
         }
+    }
+
+    // 更改计算方式
+    changeBillingMethod (e) {
+        this.setState({
+            billingMethod: e.target.value
+        })
     }
 }
 
