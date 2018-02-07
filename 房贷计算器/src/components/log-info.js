@@ -9,7 +9,7 @@ export default class LogInfo extends React.Component {
     render() {
         let props = this.props.result
         let noValue = <p>尚未开始计算</p>
-        console.log(props)
+        // console.log(props)
         let downPayment = props.totalType === 'totalPrice' ? (<p>
             首付：{props.downPayment}元（以下还款不会计算首付，只计算还贷金额）
         </p>) : null

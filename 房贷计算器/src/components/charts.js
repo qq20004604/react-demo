@@ -12,7 +12,7 @@ import React from "react";
 var echarts = require('echarts/lib/echarts');
 require('echarts/lib/chart/line');
 // 引入提示框和标题组件
-require('echarts/lib/component/tooltip');
+// require('echarts/lib/component/tooltip');
 require('echarts/lib/component/title');
 
 // 基于准备好的dom，初始化echarts实例
