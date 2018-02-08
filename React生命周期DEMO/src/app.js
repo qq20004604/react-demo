@@ -88,7 +88,7 @@ class HelloWord extends React.Component {
     render() {
         console.log('3、render 【父组件】')
         return <div>
-            <Child></Child>
+            <Child count={this.state.count} noChangeValue='123'></Child>
             <button onClick={this.clickCount}>当前{this.state.count}，点击增加1</button>
         </div>
     }

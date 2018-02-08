@@ -90,7 +90,7 @@
     <tr>
         <td>componentWillReceiveProps(nextProps)</td>
         <td>父组件的 state 改变后，子组件的这个函数会被执行</td>
-        <td>父组件的 state 被改变后，子组件的这个函数会执行（参数是props），并且子组件的 render 函数随后会被执行</td>
+        <td>父组件的 state 被改变后，子组件的这个函数会执行（参数是props，包括改变的和未改变的），并且子组件的 render 函数随后会被执行</td>
     </tr>
     <tr>
         <td>shouldComponentUpdate(nextProps, nextState)</td>
