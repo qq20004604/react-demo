@@ -243,7 +243,7 @@ ReactDOM.render(
         {/* ---- foo就是被传的变量（这里就是字符串 'world'） ---- */}
         <HelloWord toChild={foo}/>
         <p>当前时间是：{formatDate(new Date())}</p>
-        {/*<Leaner/>*/}
+        {/*<Learner/>*/}
     </div>,
     document.getElementById('root')
 )
@@ -586,7 +586,7 @@ ReactDOM.render(
     <tr>
         <td>componentWillReceiveProps(nextProps)</td>
         <td>父组件的 state 改变后，子组件的这个函数会被执行</td>
-        <td>父组件的 state 被改变后，子组件的这个函数会执行（参数是props），并且子组件的 render 函数随后会被执行</td>
+        <td>父组件的 state 被改变后，子组件的这个函数会执行（参数是props，包括改变的和未改变的），并且子组件的 render 函数随后会被执行</td>
     </tr>
     <tr>
         <td>shouldComponentUpdate(nextProps, nextState)</td>
@@ -1885,6 +1885,202 @@ let Component = <table>
 </table>
 ```
 
-<h3>25、</h3>
+<h3>25、高阶组件</h3>
 
-<h3>26、</h3>
+
+
+<h3>26、异步组件</h3>
+
+当在React里使用异步组件时，核心知识是两个：
+
+1. webpack 如何异步加载其他模块：通过 ``require(['xxx'], function(module){})``来实现；
+2. React 里如何使用异步加载的这个模块：参考正常使用模块时的做法；
+
+<br>
+
+【异步加载】
+
+关于 webpack 的异步加载，可以查看我写的这一篇[异步加载实战DEMO](https://github.com/qq20004604/webpack-study/tree/master/%E3%80%90%E5%AE%9E%E6%88%98%EF%BC%94%E3%80%91%E6%89%93%E5%8C%85%E5%B8%A6%E5%BC%82%E6%AD%A5%E5%8A%A0%E8%BD%BD%E5%8A%9F%E8%83%BD%E7%9A%84%E6%A8%A1%E5%9D%97).
+
+简单来说，就是 require 的参数一，从字符串变为数组，然后参数二是一个回调函数，函数的参数，就是你异步加载的模块。
+
+因此 拿到参数 等于 获得模块。
+
+【React里如何使用】
+
+1. 我们要异步获得这个模块；
+2. 我们可以参考高阶组件的用法，来使用这个模块（函数返回一个类，赋值给某个变量，然后该变量作为JSX的标签使用）；
+
+先给一个简单版本：
+
+```
+class RefsDemo extends React.Component {
+    constructor() {
+        super()
+        this.state = {
+            myComponent: null
+        }
+        this.load = this.load.bind(this)
+    }
+
+    render() {
+        return <div>
+            {/* 点击执行 load 方法 */}
+            <button onClick={this.load}>点击加载异步组件</button>
+            {/* 变量存在时（非空，使用标签作为JSX的标签名（该变量已被赋值异步模块）；否则使用null（即无DOM） */}
+            {
+                this.state.myComponent ? <this.state.myComponent></this.state.myComponent> : null
+            }
+        </div>
+    }
+
+    load() {
+        // 这是一个异步行为，所以需要在回调函数里获取这个模块
+        require(['./learner.js'], Component => {
+            // 赋值给 state 变量
+            this.setState({
+                // 加载到的模块存储在 Comment.default 中（因为是通过 export default 导出的）
+                myComponent: Component.default
+            })
+        })
+    }
+}
+```
+
+思路是：
+
+1. 用 state 变量 myComponent 存储模块，初始为空（不显示也不加载）；
+2. 当点击按钮时，异步加载模块 ``'./learner.js'``，回调函数传参获得该模块；
+3. 将该模块赋值给 state 变量 myComponent，触发 state 改变时的生命周期（会触发render方法）；
+4. render 重新渲染时，发现 ``this.state.myComponent`` 隐式转换后非 false，因此使用其 JSX 标签（即将异步组件嵌入到当前组件中）；
+5. 于是将异步组件嵌入了当前组件中，实现了 React 组件的异步加载；
+
+其他的比较好理解，比较别扭的是 JSX 语法：
+
+```
+{
+    this.state.myComponent ? <this.state.myComponent></this.state.myComponent> : null
+}
+```
+
+之所以可以这么写，参考本系列的 【22】 的第一小节，即组件被赋值给对象的属性时（这里体现的是 this 的 state 属性的 myComponent 属性），因此不需要大写，可以直接用变量名作为标签名。
+
+---
+
+<b>进阶——异步组件加载器：</b>
+
+问题：
+
+1. 以上的写法还是太过于复杂；
+2. 需要用 state 属性来控制组件是否显示；
+3. 需要用一个变量存储该模块，并在JSX语法里用这个变量作为标签名；
+4. 要写一个 load 方法，用于加载异步组件；
+
+总而言之，不够智能，不优雅；
+
+目标：
+
+1. 写一个异步组件加载器；
+2. 实现以下功能：
+3. 给其传一个函数，如：``const Learner = resolve => require(['./learner.js'], resolve)``，这个函数的原型是上面的 ``require(['./learner.js'], Component => {})``；
+4. 再给其传一个变量 displayComponent，用于控制这个组件是否显示；
+5. 当第一次设置 displayComponent 为 true，且组件未加载时，则加载该组件；
+6. 为了防止组件重复加载，因此组件内部变量 ``this.state.amount`` 负责表示当前组件状态（未加载，加载中，加载完毕）；
+7. 组件何时显示：组件加载完毕（``this.state.component``） && 父组件控制该组件是否显示（``this.state.displayComponent``）；
+
+因此，父组件只需要干两件事情就行了：
+
+1. 传一个柯里化处理后的异步组件加载函数；
+2. 一个变量 displayComponent 控制该异步组件是否显示（首次显示时自动加载）；
+
+如
+代码：
+>app.js 父组件内的代码
+
+```
+// 引入异步组件加载器
+import AsyncLoad from './asyncLoader.js'
+
+// 异步组件加载函数封装
+const Leaner = resolve => require(['./learner.js'], resolve)
+
+// 以下是父组件的 render 方法的异步组件加载器的 JSX 标签
+<AsyncLoad modules={Leaner} displayComponent={this.state.displayComponent}></AsyncLoad>
+```
+
+> asyncLoader.js 异步组件加载器中的代码
+
+具体解释请看代码注释
+
+```
+/**
+ * Created by 王冬 on 2018/2/8.
+ * QQ: 20004604
+ * weChat: qq20004604
+ * 异步加载工厂组件
+ */
+import React from "react";
+
+const loadingStatus = {
+    notLoaded: 0,
+    loading: 1,
+    loaded: 2
+}
+
+export default class AsyncLoader extends React.Component {
+    constructor() {
+        super()
+        this.state = {
+            amount: loadingStatus.notLoaded,  // 0 表示未加载，1表示加载中，2表示加载完毕。没有考虑加载失败的问题（并不难）
+            displayComponent: false,    // 是否显示组件
+            component: null // 异步组件被赋值给这个变量
+        }
+    }
+
+    // 生命周期函数，父组件更改 state 后会触发这个函数
+    componentWillReceiveProps(nextProps) {
+        // 如果没有modules，则直接报错
+        if (!nextProps.modules) {
+            return console.error('你没有传值 modules 给【异步组件加载器】')
+        }
+        // 如果 control 值为 true，且之前未加载过组件（用 amount === 0 来表示）
+        if (nextProps.displayComponent && this.state.amount === 0) {
+            console.log('开始加载组件')
+            // 那么加载组件
+            this.setState({
+                amount: loadingStatus.loading   // 表示加载中
+            })
+            nextProps.modules(module => {
+                if (!module.default) {
+                    return console.error('你可能加载多个异步组件，或者加载的组件并非 React 的组件')
+                }
+                // 将异步赋值给 state 相应的变量
+                console.log('组件加载完毕')
+                this.setState({
+                    amount: loadingStatus.loaded,   // 加载完毕
+                    component: module.default
+                })
+            })
+        }
+
+        this.setState({
+            displayComponent: nextProps.displayComponent
+        })
+    }
+
+    render() {
+        /* <React.Fragment> 是 React 的包裹容器（类似 Vue 的 <template> 标签） */
+        return <React.Fragment>
+            {/* 只有当前显示组件，并且组件加载完毕了，才显示该组件 */}
+            {
+                this.state.displayComponent && this.state.component ?
+                    <this.state.component></this.state.component> : null
+            }
+        </React.Fragment>
+    }
+}
+
+```
+
+
+<h3>27、</h3>
