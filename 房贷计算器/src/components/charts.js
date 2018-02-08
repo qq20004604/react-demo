@@ -6,18 +6,11 @@
  *
  */
 import React from "react";
+import myEcharts from 'echart'
 
-// 按需引入，这里是只引入折线图
-// https://github.com/ecomfe/echarts/blob/master/index.js
-var echarts = require('echarts/lib/echarts');
-require('echarts/lib/chart/line');
-// 引入提示框和标题组件
-// require('echarts/lib/component/tooltip');
-require('echarts/lib/component/title');
-
-// 基于准备好的dom，初始化echarts实例
+// 基于准备好的dom，初始化myEcharts实例
 export default class Charts extends React.Component {
-    constructor (props) {
+    constructor(props) {
         super(props)
         this.makeCharts = this.makeCharts.bind(this)
         this.state = {
@@ -25,7 +18,7 @@ export default class Charts extends React.Component {
         }
     }
 
-    render () {
+    render() {
         return <div>
             <button onClick={this.makeCharts}>生成图表</button>
             <div style={(this.state.isShowChart ? {height: '400px'} : {})} ref={dom => {
@@ -34,7 +27,7 @@ export default class Charts extends React.Component {
         </div>
     }
 
-    makeCharts () {
+    makeCharts() {
         let length = this.props.value.length
         if (length === 0) {
             return alert('你需要先计算数据，才能显示图表')
@@ -67,7 +60,8 @@ export default class Charts extends React.Component {
                     type: 'line'
                 }]
             };
-            var myChart = echarts.init(this.container);
+            debugger
+            var myChart = myEcharts.init(this.container);
             // 绘制图表
             myChart.setOption(option);
         })

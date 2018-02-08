@@ -6,7 +6,6 @@ import createTable from './table'
 import style from '../css/main.css';
 import Charts from './charts';
 
-
 let tableInfo = {
     tds: [
         {
@@ -67,7 +66,7 @@ let tableInfo = {
 let Table = createTable(tableInfo)
 
 class MyDemo extends React.Component {
-    constructor () {
+    constructor() {
         super()
         this.state = {
             downPayment: 0,    // 首付
@@ -79,14 +78,14 @@ class MyDemo extends React.Component {
             years: 0,  // 总计年数
             CPI: 0, // CPI年均通货膨胀
             resultList: [],
-            billingMethod: 'computingByEqualPrincipal'
             // 等额本金还款计算方式 computingByEqualPrincipal, 等额本息 computedPrincipalInterest
+            billingMethod: 'computingByEqualPrincipal'
         }
         this.getValue = this.getValue.bind(this)
         this.changeBillingMethod = this.changeBillingMethod.bind(this)
     }
 
-    render () {
+    render() {
         return <div>
             <h1>{this.state.billingMethod === 'computingByEqualPrincipal' ?
                 '等额本金房贷还款计算器' : '等额本息房贷还款计算器'}</h1>
@@ -116,7 +115,7 @@ class MyDemo extends React.Component {
         </div>
     }
 
-    getValue () {
+    getValue() {
         let value = this.inputArea.getState()
         let state = {
             totalPay: 0,   // 累计还款（含利息）
@@ -150,7 +149,7 @@ class MyDemo extends React.Component {
     }
 
     // 等额本金还款计算方式
-    computingByEqualPrincipal (value) {
+    computingByEqualPrincipal(value) {
         let totalWithoutDownPayment = value.totalWithoutDownPayment;   // 需还本金
         let totalWithoutDownPaymentLeft = totalWithoutDownPayment; // 待还本金
         let monthInterestRate = value.totalInterestRate / 12;  // 月利率
@@ -194,7 +193,7 @@ class MyDemo extends React.Component {
     }
 
     // 等额本息计算法
-    computedPrincipalInterest (value) {
+    computedPrincipalInterest(value) {
         let totalWithoutDownPayment = value.totalWithoutDownPayment;   // 需还本金
         let totalWithoutDownPaymentLeft = totalWithoutDownPayment; // 待还本金
         let monthInterestRate = value.totalInterestRate / 12;  // 月利率
@@ -237,7 +236,7 @@ class MyDemo extends React.Component {
     }
 
     // 更改计算方式
-    changeBillingMethod (e) {
+    changeBillingMethod(e) {
         this.setState({
             billingMethod: e.target.value
         })

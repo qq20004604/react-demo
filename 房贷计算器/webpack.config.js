@@ -9,7 +9,7 @@ const config = {
         app: './src/components/app.js',
         vendor: [
             'react',
-            'react-dom',
+            'react-dom'
         ]
     },
     // 出口文件
@@ -41,7 +41,7 @@ const config = {
                         options: {
                             modules: true,
                             minimize: true,
-                            sourceMap: true
+                            sourceMap: false
                         }
                     }
                 ]
@@ -64,6 +64,11 @@ const config = {
     resolve: {
         // 省略后缀名
         extensions: ['.js']
+    },
+    externals: {
+        // 指定别名
+        // 后面是原本使用的全局变量名，前面的是引入的包名（就是import xx from 'echart'），然后我们实际写代码时候，用的是xx这个变量名。
+        "echart": 'echarts'
     }
 }
 
