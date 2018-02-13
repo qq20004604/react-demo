@@ -1,4 +1,4 @@
-﻿<h3>1、安装</h3>
+<h3>1、安装</h3>
 
 推荐使用 DEMO 的 package.json 配置来安装
 
@@ -2083,4 +2083,11 @@ export default class AsyncLoader extends React.Component {
 ```
 
 
-<h3>27、</h3>
+<h3>27、React-router</h3>
+
+见根目录下的 ``react-router.md`` 文件
+
+
+
+
+<h3>28、</h3>
