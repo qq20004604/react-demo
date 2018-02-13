@@ -1,3 +1,13 @@
+<h3>0、参考文献</h3>
+
+[React Router 4 简易入门](https://segmentfault.com/a/1190000010174260)
+
+[一个中文文档，但不确定是否是官方的，例子比较多](http://reacttraining.cn/web/example/basic)
+
+[初探 React Router 4.0](https://www.jianshu.com/p/e3adc9b5f75c) 这个对标签的说明比较详细
+
+[react-router v4 如何静态传值给子组件](https://segmentfault.com/q/1010000012262160)
+
 <h3>1、React-router 安装</h3>
 
 >这里的版本号是 "react-router-dom": "^4.2.2"
@@ -18,11 +28,13 @@ npm install --save react-router-dom
 
 <h3>2、基本DEMO</h3>
 
+> 参考 1.baseDemo.js
+
 首先引入对应的模块
 
 ```
 import {
-    BrowserRouter as Router,
+    HashRouter as Router,
     Route,
     Link
 } from 'react-router-dom'
@@ -39,14 +51,14 @@ import {
 ```
 import React from "react";
 import {
-    BrowserRouter as Router,
+    HashRouter as Router,
     Route,
     Link
 } from 'react-router-dom'
 
-const first = () => <div>第一个示例的第【1】个路由，第一个路由在第一个和第二个url里都会显示，但不在第三个显示</div>
-const second = () => <div>第一个示例的第【2】个路由，只在第二个url里显示</div>
-const third = () => <div>第三个示例</div>
+const First = () => <div>第一个示例的第【1】个路由，第一个路由在第一个和第二个url里都会显示，但不在第三个显示</div>
+const Second = () => <div>第一个示例的第【2】个路由，只在第二个url里显示</div>
+const Third = () => <div>第三个示例</div>
 
 class BaseDemo extends React.Component {
     render() {
@@ -60,10 +72,10 @@ class BaseDemo extends React.Component {
                     <li><Link to={`${this.props.match.url}/2`}>示例2</Link></li>
                     <li><Link to={`${this.props.match.url}/3`}>示例3</Link></li>
 
-                    <Route path={`${this.props.match.url}/1`} component={first}/>
-                    <Route path={`${this.props.match.url}/2`} component={first}/>
-                    <Route path={`${this.props.match.url}/2`} component={second}/>
-                    <Route path={`${this.props.match.url}/3`} component={third}/>
+                    <Route path={`${this.props.match.url}/1`} component={First}/>
+                    <Route path={`${this.props.match.url}/2`} component={First}/>
+                    <Route path={`${this.props.match.url}/2`} component={Second}/>
+                    <Route path={`${this.props.match.url}/3`} component={Third}/>
                 </div>
             </Router>
         </div>
@@ -81,6 +93,8 @@ class BaseDemo extends React.Component {
 简单来说，就是 点击 Link 标签跳转 url，然后显示对应的 url 的组件。
 
 <h3>3、路由嵌套：</h3>
+
+> 参考 2.routingNested.js
 
 还是以上面那个 DEMO 为示例。
 
@@ -109,13 +123,13 @@ class BaseDemo extends React.Component {
 ```
 import React from "react";
 import {
-    BrowserRouter as Router,
+    HashRouter as Router,
     Route,
     Link
 } from 'react-router-dom'
 
-const first = () => <div>第一个示例的第【1】个路由，第一个路由在第一个和第二个url里都会显示，但不在第三个显示</div>
-const second = () => <div>第一个示例的第【2】个路由，只在第二个url里显示</div>
+const First = () => <div>第一个示例的第【1】个路由，第一个路由在第一个和第二个url里都会显示，但不在第三个显示</div>
+const Second = () => <div>第一个示例的第【2】个路由，只在第二个url里显示</div>
 const ChildRouter = (route) => <div>第一个示例的第【3】个路由，只在第三个url里显示
     <Router>
         <div>
@@ -146,8 +160,8 @@ class RoutingNested extends React.Component {
                     <li><Link to={`${this.props.match.url}/3`}>示例3</Link></li>
                     <hr/>
 
-                    <Route path={`${this.props.match.url}/1`} component={first}/>
-                    <Route path={`${this.props.match.url}/2`} component={second}/>
+                    <Route path={`${this.props.match.url}/1`} component={First}/>
+                    <Route path={`${this.props.match.url}/2`} component={Second}/>
                     <Route path={`${this.props.match.url}/3`} component={ChildRouter}/>
                 </div>
             </Router>
@@ -156,9 +170,158 @@ class RoutingNested extends React.Component {
 }
 ```
 
-<h3>4、</h3>
+<h3>4、BrowserRouter 和 HashRouter</h3>
 
+以上两个DEMO，都是 HashRouter，而非 BrowserRouter ，二者有所不同。
 
+以下解释的前提是你要懂什么叫 hash 地址，就是 # 号后面的 url。
 
-<h3>5、</h3>
-<h3>6、</h3>
+假如有一个 Link 标签，点击后跳转到 ``/abc/def``。
+
+1. BrowserRouter： ``http://localhost:8080/abc/def``
+2. HashRouter： ``http://localhost:8080/#/abc/def``
+
+<br>
+如果有服务器端的动态支持，建议使用 ``BrowserRouter``，否则建议使用 ``HashRouter``。
+
+原因在于，如果是单纯的静态文件，假如路径从 ``/`` 切换到 ``/a`` 后，此时刷新页面，页面将无法正常访问。
+
+二者的替换方法很简单，我们在引入 ``react-router-dom`` 时，如以下：
+
+```
+import {
+    BrowserRouter as Router,
+    Route,
+    Link
+} from 'react-router-dom'
+```
+
+将 ``BrowserRouter`` 修改为 ``HashRouter`` 就可以了，基本不需要修改其他东西。
+
+因为写服务器文件还比较麻烦，因此在之后的 DEMO 中，我们将主要使用 HashRouter 而不是 BrowserRouter。
+
+<h3>5、props</h3>
+
+> 参考 3.props.js
+
+react-router 的路由信息，都存储在组件的 props 里。
+
+之所以是存在 props 里，是因为我们写在父组件里的，是 Route 标签，我们需要显示的组件，是作为 Route 标签的属性而传进去的。
+
+显然，而我们的组件，作为 Route 标签的子组件而存在，因此，路由数据通过 props 传给我们的组件，这也是理所当然的事情了。
+
+因此，可以得出几个结论：
+
+1. 只有 Route 标签里传入的组件，才能通过 props 属性读取路由属性（除非你自己手动传给子组件）；
+2. 每个能读取路由属性的组件，其 match 属性，获得的是当前级别的路由的属性（例如本级路由的 ``match.url = '/Params/2'``，那么上级路由的 ``match.url = '/Params'``；
+
+<br>
+其他论断：
+
+1. ``match.isExact``：假如当前路径和 route 标签里的 path 完全相同，该值为 true，否则为 false（例如当匹配到次级路由时，那么上级路由的这个属性则为 false，次级当前的为 true）（当 url 为 ``/`` 时显示该组件，``/a`` 不显示组件，需要使用这个）；
+2. ``match`` 属性的值，是根据当前路由（组件所在的 route 标签）的层级而决定的；
+3. ``location`` 属性的值，在每个能读取到这个属性的路由组件，都是相同的；
+4. 类似 ``/1?a=1`` 这样的路径，其中 ``?a=1``，是通过 ``location.search`` 来获取；
+5. 路由信息，当路由变化时，是会跟着一起更新的，但并不是实时更新的；
+
+对于第五条，进行详细解释：
+
+假如我通过点击 ``<Link>`` 标签，让路由从 ``/a`` 跳转到 ``/b`` ，也就是说，从显示 A 组件到显示 B 组件。会发生以下事情：
+
+【1】如果 Link 标签里有一个 onClick 事件，那么显然可以拿到 location 属性的值。
+
+在该事件执行的这段时间，``props.location`` 的值，是 url 更新之前的。
+
+并且，``window.location``（也就是原生的），其 url 也是更新之前的；
+
+【2】那什么时候可以获取到更新之后的 url 呢？
+
+答案是路由更新后，所对应的那个组件，在挂载的时候，生命周期处于 ``componentWillMount`` 时，可以获取到最新的 url。
+
+因此如果需要第一时间在父组件内拿到更新后的值，那么需要在父组件，将回调函数传给子组件才可以实现。
+
+实现原理：可以参考 [17、组件通信](https://github.com/qq20004604/react-demo#17%E7%BB%84%E4%BB%B6%E9%80%9A%E4%BF%A1)，父组件将回调函数传给表单组件，然后表单组件负责执行这个回调函数，并将修改后的值作为参数传给函数。
+
+具体写法参考后面章节。
+
+DEMO如下：
+
+【1、先例行引入】
+
+```
+import React from "react";
+import {HashRouter as Router, Link, Route} from 'react-router-dom'
+```
+
+【2、两个子组件，分别点击显示和直接显示在页面上】
+
+```
+class First extends React.Component {
+    constructor() {
+        super()
+        this.log = this.log.bind(this)
+    }
+
+    render() {
+        return <button onClick={this.log}>点击显示路由信息，点击后请查看控制台</button>
+    }
+
+    log() {
+        console.log(this.props)
+    }
+}
+
+const Second = props => <div>
+    函数组件显示路由信息：（这里是本级 Route 标签的部分信息）
+    <pre>{JSON.stringify(props, undefined, 4)}</pre>
+</div>
+```
+
+【3、父组件，负责对比其 props 与子组件不同】
+
+```
+class RoutingNested extends React.Component {
+    constructor() {
+        super()
+    }
+
+    render() {
+        return <div>
+            <h3>React-router 参数设置</h3>
+            <h3>注意，这里存的不是组件里的路由信息，而是上一级 Router 标签的路由信息</h3>
+            <h3>路由数据被存储在 this.props 里，这是其中部分属性 <pre>{JSON.stringify(this.props, undefined, 4)}</pre></h3>
+            <Router>
+                <div>
+                    <li>
+                        <Link to={`${this.props.match.url}/1?a=1`}
+                              onClick={() => {
+                                  console.log('Link 标签（跳转到/1）的 onClick 事件', this.props.location)
+                              }}>
+                            示例1
+                        </Link>
+                    </li>
+                    <li>
+                        <Link to={`${this.props.match.url}/2`}
+                              onClick={() => {
+                                  console.log('Link 标签（跳转到/2）的 onClick 事件', this.props.location)
+                              }}>
+                            示例2
+                        </Link>
+                    </li>
+                    <hr/>
+
+                    <Route path={`${this.props.match.url}/1`}
+                           component={First}/>
+                    <Route path={`${this.props.match.url}/2`} component={Second}/>
+                </div>
+            </Router>
+        </div>
+    }
+}
+```
+
+具体示例参照 DEMO 里的 ``3.props.js``
+
+<h3>6、参数</h3>
+<h3>7、传参</h3>
+<h3>8、</h3>

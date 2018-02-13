@@ -1,3 +1,7 @@
+﻿<h3>0、本项目的DEMO</h3>
+
+https://github.com/qq20004604/react-demo
+
 <h3>1、安装</h3>
 
 推荐使用 DEMO 的 package.json 配置来安装
@@ -249,49 +253,7 @@ ReactDOM.render(
 )
 ```
 
-<h3>9、类名（样式）</h3>
-
-在 React 里，给元素添加类名，不是通过 ``class``，而是 ``<div className={domClass}></div>`` 这种形式；
-
-示例：
-
-```
-let domClass = 'container parent'
-
-class HelloWord extends React.Component {
-    constructor(props) {
-        // props的值就是你传给他的变量，比如这里就是 {toChild: 'world'}
-        super(props);
-    }
-
-    render() {
-        return <div className={domClass}>
-        </div>
-    }
-}
-
-ReactDOM.render(
-    <div>
-        <HelloWord/>
-    </div>,
-    document.getElementById('root')
-)
-```
-
-结果是：
-
-```
-<div class="container parent"></div>
-```
-
-原因：
-
->警告:
-
->因为 JSX 的特性更接近 JavaScript 而不是 HTML , 所以 React DOM 使用 camelCase 小驼峰命名 来定义属性的名称，而不是使用 HTML 的属性名称。
-
->例如，class 变成了 className，而 tabindex 则对应着 tabIndex.
-
+<h3>9、和后面重复（已删除）</h3>
 
 <h3>10、事件处理</h3>
 
@@ -458,7 +420,7 @@ class HelloWord extends React.Component {
 
 <h3>11、组件复用</h3>
 
-同一个组件可以同时插入多个到父组件中，并且各个组件的状态是独立的。
+同一个组件可以同时插入多个到父组件中，并且各个组件的状态是独立的。（和Vue的组件是一个道理，用法也类似）
 
 ```
 class HelloWord extends React.Component {
@@ -796,7 +758,7 @@ render() {
 
 关于 v-show 就没什么好说的了吧？手动设置标签的 style 就行，很简单。
 
-<h3>15、列表渲染（对标 v-for）</h3>
+<h3>15、列表渲染（对标Vue的 v-for）</h3>
 
 【实现思路】
 
@@ -849,7 +811,7 @@ class HelloWord extends React.Component {
 <B>总结写前面</b>
 
 1. 值的改变，通过 ``onChange`` 事件触发（包括文字输入框、radio、checkbox）；
-2. 
+2. 选中与否，通过设置 HTML 元素的 checked 等于一个符合要求的 state 的值（因此表达式结果为 true，于是 ``checked='true'`` 就是选中），来实现。
 
 【form】标签：
 
@@ -1589,6 +1551,17 @@ class StyleDemo extends React.Component {
     }
 }
 ```
+
+
+
+原因：
+
+>警告:
+
+>因为 JSX 的特性更接近 JavaScript 而不是 HTML , 所以 React DOM 使用 camelCase 小驼峰命名 来定义属性的名称，而不是使用 HTML 的属性名称。
+
+>例如，class 变成了 className，而 tabindex 则对应着 tabIndex.
+
 
 <h3>22、JSX</h3>
 
