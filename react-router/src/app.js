@@ -7,6 +7,7 @@ import RoutingNested from './2.routingNested'
 import Props from './3.props'
 import Params from './4.params'
 import FromParentComponent from './5.fromParentComponent'
+// import Redirect from './6.redirect'
 
 const Config = () => (
     <Router>
@@ -17,6 +18,7 @@ const Config = () => (
                 <li><Link to="/RouteInfo">路由数据</Link></li>
                 <li><Link to="/Params">参数</Link></li>
                 <li><Link to="/FromParentComponent">父组件传参给子组件</Link></li>
+                {/*<li><Link to="/Redirect">重定向</Link></li>*/}
             </ol>
 
             <hr/>
@@ -25,6 +27,7 @@ const Config = () => (
             <Route path="/RouteInfo" component={Props}/>
             <Route path="/Params" component={Params}/>
             <Route path="/FromParentComponent" component={FromParentComponent}/>
+            {/*<Route path="/Redirect" component={Redirect}/>*/}
         </div>
     </Router>
 )
