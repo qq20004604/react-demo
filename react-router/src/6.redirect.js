@@ -6,119 +6,93 @@
  *
  */
 import React from 'react'
-// import {HashRouter as Router, Link, Redirect, Route, withRouter} from 'react-router-dom'
+import {HashRouter as Router, Link, Redirect, Route, withRouter} from 'react-router-dom'
 
-// const AuthExample = () => (
-//     <Router>
-//         <div>
-//             <AuthButton/>
-//             <ul>
-//                 <li><Link to="/public">Public Page</Link></li>
-//                 <li><Link to="/protected">Protected Page</Link></li>
-//             </ul>
-//             <Route path="/public" component={Public}/>
-//             <Route path="/login" component={Login}/>
-//             <PrivateRoute path="/protected" component={Protected}/>
-//         </div>
-//     </Router>
-// )
+const AuthExample = props => (
+    <Router>
+        <div>
+            <AuthButton/>
+            <ul>
+                <li><Link to={`${props.match.url}/public`}>Public Page</Link></li>
+                <li><Link to={`${props.match.url}/protected`}>Protected Page</Link></li>
+            </ul>
+            <Route path={`${props.match.url}/public`} component={Public}/>
+            <Route path={`${props.match.url}/login`} component={Login}/>
+            <PrivateRoute path={`${props.match.url}/protected`} component={Protected}/>
+        </div>
+    </Router>
+)
 
-
-// const fakeAuth = {
-//     isAuthenticated: false,
-//     authenticate(cb) {
-//         this.isAuthenticated = true
-//         setTimeout(cb, 100) // fake async
-//     },
-//     signout(cb) {
-//         this.isAuthenticated = false
-//         setTimeout(cb, 100)
-//     }
-// }
-//
-// const AuthButton = withRouter(({history}) => (
-//     fakeAuth.isAuthenticated ? (
-//         <p>
-//             Welcome! <button onClick={() => {
-//             fakeAuth.signout(() => history.push('/'))
-//         }}>Sign out</button>
-//         </p>
-//     ) : (
-//         <p>You are not logged in.</p>
-//     )
-// ))
-//
-// const PrivateRoute = ({component: Component, ...rest}) => (
-//     <Route {...rest} render={props => (
-//         fakeAuth.isAuthenticated ? (
-//             <Component {...props}/>
-//         ) : (
-//             <Redirect to={{
-//                 pathname: '/login',
-//                 state: {from: props.location}
-//             }}/>
-//         )
-//     )}/>
-// )
-//
-//
-// const Public = () => <h3>Public</h3>
-// const Protected = () => <h3>Protected</h3>
-//
-// class Login extends React.Component {
-//     state = {
-//         redirectToReferrer: false
-//     }
-//
-//     login = () => {
-//         fakeAuth.authenticate(() => {
-//             this.setState({redirectToReferrer: true})
-//         })
-//     }
-//
-//     render() {
-//         const {from} = this.props.location.state || {from: {pathname: '/'}}
-//         const {redirectToReferrer} = this.state
-//
-//         if (redirectToReferrer) {
-//             return (
-//                 <Redirect to={from}/>
-//             )
-//         }
-//
-//         return (
-//             <div>
-//                 <p>You must log in to view the page at {from.pathname}</p>
-//                 <button onClick={this.login}>Log in</button>
-//             </div>
-//         )
-//     }
-// }
-
-let foo = {
-    a: 1,
-    b: 2
+const fakeAuth = {
+    isAuthenticated: false,
+    authenticate(cb) {
+        this.isAuthenticated = true
+        setTimeout(cb, 100) // fake async
+    },
+    signout(cb) {
+        this.isAuthenticated = false
+        setTimeout(cb, 100)
+    }
 }
 
-let bar = {c: 3, ...foo}
+const AuthButton = withRouter(({history}) => {
+    return (
+        fakeAuth.isAuthenticated ? (
+            <p>
+                Welcome! <button onClick={() => {
+                fakeAuth.signout(() => history.push('/'))
+            }}>Sign out</button>
+            </p>
+        ) : (
+            <p>You are not logged in.</p>
+        )
+    )
+})
 
-class Foo extends React.Component {
+const PrivateRoute = ({component: Component, ...rest}) => (
+    <Route {...rest} render={props => {
+        return fakeAuth.isAuthenticated ? (
+            <Component {...props}/>
+        ) : (
+            <Redirect to={{
+                pathname: `${props.match.url.replace(/\/[^/]+$/, '')}/login`,
+                state: {from: props.location}
+            }}/>
+        )
+    }}/>
+)
+
+
+const Public = () => <h3>Public</h3>
+const Protected = () => <h3>Protected</h3>
+
+class Login extends React.Component {
     state = {
-        a: 1
+        redirectToReferrer: false
+    }
+
+    login = () => {
+        fakeAuth.authenticate(() => {
+            this.setState({redirectToReferrer: true})
+        })
     }
 
     render() {
-        return (<div>a: {this.state.a}</div>)
+        const {from} = this.props.location.state || {from: {pathname: '/'}}
+        const {redirectToReferrer} = this.state
+        if (redirectToReferrer) {
+            return (
+                <Redirect to={from}/>
+            )
+        }
+
+        return (
+            <div>
+                <p>You must log in to view the page at {from.pathname}</p>
+                <button onClick={this.login}>Log in</button>
+            </div>
+        )
     }
 }
-
-const AuthExample = () => {
-    return <div>
-        <Foo></Foo>
-        <hr/>
-        {JSON.stringify(bar)}
-    </div>
-}
-
 
 export default AuthExample
