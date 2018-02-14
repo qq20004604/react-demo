@@ -51,7 +51,7 @@ class RoutingNested extends React.Component {
 
     render() {
         return <div>
-            <h3>父组件传参给子组件</h3>
+            <h3>5、父组件传参给子组件</h3>
             <p>父组件当前值为：{this.state.time}</p>
             <Router>
                 <div>

@@ -35,7 +35,7 @@ class RoutingNested extends React.Component {
 
     render() {
         return <div>
-            <h3>React-router 参数设置</h3>
+            <h3>3、React-router 路由数据</h3>
             <h3>注意，这里存的不是组件里的路由信息，而是上一级 Router 标签的路由信息</h3>
             <h3>路由数据被存储在 this.props 里，这是其中部分属性 <pre>{JSON.stringify(this.props, undefined, 4)}</pre></h3>
             <Router>

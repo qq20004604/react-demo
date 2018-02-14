@@ -323,5 +323,131 @@ class RoutingNested extends React.Component {
 具体示例参照 DEMO 里的 ``3.props.js``
 
 <h3>6、参数</h3>
-<h3>7、传参</h3>
-<h3>8、</h3>
+
+React路由取参数，有两种：
+
+1. ``?a=1`` ：这种属于 search 字符串，在 ``location.search`` 里取值；
+2. ``/a/123`` ：这种需要从 ``match.params``里取值；
+
+但无论哪种，路由获取到的值，是跳转后的那一刻的值，而不是实时更新的最新值。
+
+具体来说：
+
+1. 假如 Link 标签跳转路径实时绑定输入框的一个值（假如值是 ``abc``），这个值作为参数传递；
+2. 点击跳转后，子组件读取到当前传的值 ``abc``；
+3. 此时修改【1】中输入框的值为 ``def``；
+4. 请问子组件读取到的值此时是多少？``abc`` 还是 ``def``；
+5. 答案是 ``abc``；
+6. 原因是当前路径是 ``abc``，这个值读取到的是当前路径的值，而不是将要跳转的路径的值，因此不是实时更新的（显然，也不应该是实时更新的）；
+
+手动修改地址栏的 url：
+
+7. 假如手动修改 url 为 ``ggg``，那么请问读取到的值是多少？
+8. 我还真去试了一下。答案是除非你修改后，按回车跳转路径，会读取到最新的；
+9. 否则，依然保持为修改前 ``abc``；
+10. 即使你重新触发 render 方法（比如修改 state 来实现），依然获取到的是 ``abc`` ，而不是 ``ggg``；
+
+获取最新值：
+
+11. 如果你想要获取到新值，那么请重新点击跳转（绑定了新的 url 的 Link 标签）即可；
+12. 重新跳转后（假如跳转到同一个页面），url 改变了，那么组件会重新加载么？
+13. 答案是否定的，如果跳转到同一个组件，仅是参数改变，那么组件是不会重新加载的，即组件内的数据保持之前不变，只有传递的参数改变了（生命周期函数也不会重新执行）；
+
+比较特殊的，有关生命周期：
+
+1. 组件的生命周期函数，只会在第一次挂载的时候执行，如果前后跳转是同一个组件，那么该组件的生命周期函数不会重复执行；
+2. 但 state 的生命周期，会多次执行（只要父组件的 state 改变了，子组件的相关函数会被执行）；
+3. 由于路由信息是通过 props 传值的，因此也会多次触发；
+4. 不过没有影响，传的值依然是旧值（因为路由信息没变）；
+5. 但假如你在 state 生命周期函数里做了一些什么事情，可能需要注意一下会不会带来不良影响（虽然一般不会）；
+
+示例：
+
+【例行引入和子组件】
+
+```
+import React from "react";
+import {HashRouter as Router, Link, Route} from 'react-router-dom'
+
+const First = props => <div>
+    第一个组件读取参数（location.search） {props.location.search}
+</div>
+
+const Second = props => <div>
+    第二个组件读取参数（match.params.myParams） {props.match.params.myParams}
+</div>
+```
+
+【父组件，负责配置路由和传值】
+
+```
+class RoutingNested extends React.Component {
+    constructor() {
+        super()
+        this.state = {
+            firstNumber: 0,
+            secondNumber: 0
+        }
+        this.changeFirst = this.changeFirst.bind(this)
+        this.changeSecond = this.changeSecond.bind(this)
+    }
+
+    render() {
+        return <div>
+            <h3>4、React-router 传参</h3>
+            <h3>请在对应的跳转标签里，输入你想要传的值</h3>
+            <Router>
+                <div>
+                    <li>
+                        <Link to={`${this.props.match.url}/1?a=${this.state.firstNumber}`}
+                              onClick={() => {
+                                  console.log('Link 标签（跳转到/1）的 onClick 事件', this.props.location)
+                              }}>
+                            示例1
+                        </Link>
+                        <input type="text" value={this.state.firstNumber} onChange={this.changeFirst}/>
+                    </li>
+                    <li>
+                        <Link to={`${this.props.match.url}/2/${this.state.secondNumber}`}
+                              onClick={() => {
+                                  console.log('Link 标签（跳转到/2）的 onClick 事件', this.props.location)
+                              }}>
+                            示例2
+                        </Link>
+                        <input type="text" value={this.state.secondNumber} onChange={this.changeSecond}/>
+                    </li>
+                    <hr/>
+
+                    <Route path={`${this.props.match.url}/1`} component={First}/>
+                    <Route path={`${this.props.match.url}/2/:myParams`} component={Second}/>
+                </div>
+            </Router>
+        </div>
+    }
+
+    changeFirst(e) {
+        this.setState({
+            firstNumber: e.target.value
+        })
+    }
+
+    changeSecond(e) {
+        this.setState({
+            secondNumber: e.target.value
+        })
+    }
+}
+```
+
+<h3>7、父组件传 值 or 函数 给子组件</h3>
+
+
+
+<h3>8、path 和 url 的区别</h3>
+
+假如路由匹配路径是 ``/Params/2/:myParams``，实际跳转路径是 ``/Params/2/1``。
+
+那么；
+
+1. url：``/Params/2/1``
+2. path：``/Params/2/:myParams``

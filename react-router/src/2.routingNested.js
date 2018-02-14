@@ -28,7 +28,7 @@ const ChildRouter = (route) => <div>第一个示例的第【3】个路由，只�
 class RoutingNested extends React.Component {
     render() {
         return <div>
-            <h3>React-router 路由嵌套</h3>
+            <h3>2、React-router 路由嵌套</h3>
             <Router>
                 <div>
                     {/* this.props.match.url 表示当前url */}
