@@ -471,6 +471,15 @@ class RoutingNested extends React.Component {
 
 此时，子组件就同时拿到了 路由数据 和 父组件 传给他的数据。
 
+<b>【传一个对象给子组件】</b>
+
+唯一可能存在的问题是，这个数据怎么传给子组件（毕竟是一个对象），我们之前接触的方法都是 `` k = v `` 方式传给子组件，但显然这个方法不能这么做。
+
+React也有解决方法，具体来说，利用 es6 的扩展运算符 ``...``
+
+比较简单的写法是 ``<First {...props}/>`` ，将自动展开 props 并传给 First 组件。
+
+
 示例DEMO：
 
 【例行引入依赖和子组件，子组件负责显示值】
@@ -558,9 +567,17 @@ class RoutingNested extends React.Component {
 
 <h3>8、path 和 url 的区别</h3>
 
-假如路由匹配路径是 ``/Params/2/:myParams``，实际跳转路径是 ``/Params/2/1``。
+在 match 属性中，有 path 和 url 属性，大部分时间他们是一样的，那么区别是什么呢？
+
+假如路由匹配路径是 ``/Params/2/:myParams``，实际跳转路径是 ``/Params/2/1``（此时匹配成功）。
 
 那么；
 
 1. url：``/Params/2/1``
 2. path：``/Params/2/:myParams``
+
+<h3>9、</h3>
+
+<h3>10、</h3>
+<h3>11、</h3>
+<h3>12、</h3>
