@@ -8,24 +8,14 @@
 import React from "react";
 import {HashRouter as Router, Link, Route} from 'react-router-dom'
 
-
 class First extends React.Component {
-    constructor() {
-        super()
-        this.log = this.log.bind(this)
-    }
-
     render() {
-        return <div>当前值为：{this.props.time}</div>
-    }
-
-    log() {
-        console.log(this.props)
+        return <div>【1】当前 time 值为：{this.props.time}</div>
     }
 }
 
-const Second = () => <div>
-    这里占位使用
+const Second = (props) => <div>
+    【2】time（负数）: {props.time * -1}
 </div>
 
 class RoutingNested extends React.Component {
@@ -45,35 +35,42 @@ class RoutingNested extends React.Component {
         }, 1000)
     }
 
-    componentDidMount() {
+    // 卸载时，删除定时器
+    componentWillUnmount() {
         clearInterval(this.timer)
     }
 
     render() {
+        // 这个写法和写在组件里，基本没什么区别，不过这样写感觉好看一些
+        const MySecond = props => {
+            let obj = Object.assign({}, {time: this.state.time}, props)
+            return <Second {...obj}/>
+        }
+
         return <div>
             <h3>5、父组件传参给子组件</h3>
             <p>父组件当前值为：{this.state.time}</p>
             <Router>
                 <div>
-                    {/* this.props.match.url 表示当前url */}
                     <li>
                         <Link to={`${this.props.match.url}`}>
-                            跳转查看传参
+                            跳转查看传参【1】
                         </Link>
                     </li>
                     <li>
                         <Link to={`${this.props.match.url}/2`}>
-                            占位跳转1
+                            跳转示例【2】
                         </Link>
                     </li>
                     <hr/>
 
+                    {/* 这种是写在组件里，没啥区别 */}
                     <Route exact path={`${this.props.match.url}/`}
-                           render={props => {
+                           component={props => {
                                let obj = Object.assign({}, {time: this.state.time}, props)
                                return <First {...obj}/>
                            }}/>
-                    <Route path={`${this.props.match.url}/2`} component={Second}/>
+                    <Route path={`${this.props.match.url}/2`} render={MySecond}/>
                 </div>
             </Router>
         </div>

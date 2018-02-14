@@ -8,6 +8,8 @@
 
 [react-router v4 如何静态传值给子组件](https://segmentfault.com/q/1010000012262160)
 
+[render和component的区别](http://blog.csdn.net/aqtata/article/details/76169974)
+
 <h3>1、React-router 安装</h3>
 
 >这里的版本号是 "react-router-dom": "^4.2.2"
@@ -440,6 +442,117 @@ class RoutingNested extends React.Component {
 ```
 
 <h3>7、父组件传 值 or 函数 给子组件</h3>
+
+如果你已经熟悉了前面的内容，会知道以下结论：
+
+1. 路由传参是通过 props 传参的；
+2. 子组件，是写在 Route 标签的 component 属性中的；
+3. 通过 Route 标签绑定值，是无法将值，从父组件传给子组件的；
+
+那怎么办？
+
+解决方案也不难，思路如下：
+
+1. 组件可以是一个函数；如``const MySecond = () => <div>1</div>``；
+2. Route 标签的 ``component`` 属性支持以上函数写法（显而易见）；
+3. 我们可以将子组件嵌套到函数返回的组件中；
+4. 此时我们的组件结构如下：父组件 >> Route 标签 >> 函数组件 >> 子组件；
+5. ①父组件和 Route 进行数据通信没意义；
+6. ②父组件没办法和函数组件通信；
+7. ③但父组件可以直接和子组件通信；
+
+因此，父组件将值先绑定给子组件标签，然后再返回函数组件；
+
+显然，父组件是可以和子组件通信的，但唯一问题是此时，如何将路由信息从函数组件传给子组件（路由信息从Route传给了函数组件）；
+
+这也不难。
+
+函数组件是可以拿到 props 的，通过 ``Object.assign()`` 将 props 和 父组件绑定给子组件的【函数/变量】混合到一起，再传给子组件。
+
+此时，子组件就同时拿到了 路由数据 和 父组件 传给他的数据。
+
+示例DEMO：
+
+【例行引入依赖和子组件，子组件负责显示值】
+
+```
+import React from "react";
+import {HashRouter as Router, Link, Route} from 'react-router-dom'
+
+class First extends React.Component {
+    render() {
+        return <div>【1】当前 time 值为：{this.props.time}</div>
+    }
+}
+
+const Second = (props) => <div>
+    【2】time（负数）: {props.time * -1}
+</div>
+```
+
+【父组件】
+
+```
+class RoutingNested extends React.Component {
+    constructor() {
+        super()
+        this.state = {
+            time: 0
+        }
+    }
+
+    // 这个是生命周期，目的是为了测试 state 的传递
+    componentWillMount() {
+        this.timer = setInterval(() => {
+            this.setState({
+                time: this.state.time + 1
+            })
+        }, 1000)
+    }
+
+    // 卸载时，删除定时器
+    componentWillUnmount() {
+        clearInterval(this.timer)
+    }
+
+    render() {
+        // 这个写法和写在组件里，基本没什么区别，不过这样写感觉好看一些
+        const MySecond = props => {
+            let obj = Object.assign({}, {time: this.state.time}, props)
+            return <Second {...obj}/>
+        }
+
+        return <div>
+            <h3>5、父组件传参给子组件</h3>
+            <p>父组件当前值为：{this.state.time}</p>
+            <Router>
+                <div>
+                    <li>
+                        <Link to={`${this.props.match.url}`}>
+                            跳转查看传参【1】
+                        </Link>
+                    </li>
+                    <li>
+                        <Link to={`${this.props.match.url}/2`}>
+                            跳转示例【2】
+                        </Link>
+                    </li>
+                    <hr/>
+
+                    {/* 这种是写在组件里，没啥区别 */}
+                    <Route exact path={`${this.props.match.url}/`}
+                           component={props => {
+                               let obj = Object.assign({}, {time: this.state.time}, props)
+                               return <First {...obj}/>
+                           }}/>
+                    <Route path={`${this.props.match.url}/2`} render={MySecond}/>
+                </div>
+            </Router>
+        </div>
+    }
+}
+```
+
 
 
 
