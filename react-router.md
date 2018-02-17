@@ -576,8 +576,55 @@ class RoutingNested extends React.Component {
 1. url：``/Params/2/1``
 2. path：``/Params/2/:myParams``
 
-<h3>9、</h3>
+<h3>9、路由信息</h3>
 
-<h3>10、</h3>
+在组件里，每个组件的路由数据，都是各自独立的。
+
+在之前分析中，已知：
+
+1. match 属性的值，存储的是该 Route 标签的路由；
+2. location 属性的值，其中 url 和 path 不同 Route 组件中，值是相同的；
+
+但【2】并不准确，准确的说，自带的 hash ， search ， pathname 这三个属性的值，是相同的；
+
+假如你在里面添加了其他数据，那么结果就有所不同了。
+
+例如 Link 标签，他有一个属性 to，可以用于路径跳转。
+
+比较常见的是以下这种写法：
+
+```
+<Link to={`${props.match.url}/`}>子路由</Link>
+```
+
+但是，to 的值，也可以用对象，例如这样：
+
+```
+<Link to={{
+    pathname: `${this.props.match.url}/1`,
+    myState: '这是我自定义的变量'
+}}>示例1</Link>
+```
+
+
+<h3>10、重定向</h3>
+
+重定向有两种方式，第一种是通过 ``<Redirect>`` 标签实现，第二种是通过编程式导航方式实现。
+
+【``<Redirect>`` 标签】
+
+```
+<Redirect to={'/default'}/>
+```
+
+【编程式导航方式】
+
+```
+this.props.history.push('/default')
+```
+
+两个的效果是一样的
+
+
 <h3>11、</h3>
 <h3>12、</h3>
