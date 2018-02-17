@@ -3,7 +3,7 @@
  * QQ: 20004604
  * weChat: qq20004604
  * 功能说明：
- *
+ * 重定向
  */
 import React from 'react'
 import {HashRouter as Router, Link, Redirect, Route} from 'react-router-dom'
@@ -13,11 +13,6 @@ const DefaultPage = () => <div>
 </div>
 
 class HaveRedirect extends React.Component {
-
-    constructor() {
-        super()
-    }
-
     toRedirect = () => {
         this.props.history.push(`${this.props.match.url.replace(/\/[^/]+$/, '')}/default`)
     }

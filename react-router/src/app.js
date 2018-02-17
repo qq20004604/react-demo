@@ -9,6 +9,7 @@ import Params from './4.params'
 import FromParentComponent from './5.fromParentComponent'
 import RouteInfo from './6.routeInfo'
 import Redirect from './7.redirect'
+import NeedLogin from './8.needLogin'
 
 const Config = () => (
     <Router>
@@ -21,6 +22,7 @@ const Config = () => (
                 <li><Link to="/FromParentComponent">父组件传参给子组件</Link></li>
                 <li><Link to="/RouteInfo">路由信息是独立的</Link></li>
                 <li><Link to="/Redirect">重定向</Link></li>
+                <li><Link to="/NeedLogin">登录拦截</Link></li>
             </ol>
 
             <hr/>
@@ -31,6 +33,7 @@ const Config = () => (
             <Route path="/FromParentComponent" component={FromParentComponent}/>
             <Route path="/RouteInfo" component={RouteInfo}/>
             <Route path="/Redirect" component={Redirect}/>
+            <Route path="/NeedLogin" component={NeedLogin}/>
         </div>
     </Router>
 )
