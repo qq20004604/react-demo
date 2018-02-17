@@ -10,6 +10,7 @@ import FromParentComponent from './5.fromParentComponent'
 import RouteInfo from './6.routeInfo'
 import Redirect from './7.redirect'
 import NeedLogin from './8.needLogin'
+import RouteConfigTable from './9.routeConfigTable'
 
 const Config = () => (
     <Router>
@@ -23,6 +24,7 @@ const Config = () => (
                 <li><Link to="/RouteInfo">路由信息是独立的</Link></li>
                 <li><Link to="/Redirect">重定向</Link></li>
                 <li><Link to="/NeedLogin">登录拦截</Link></li>
+                <li><Link to="/RouteConfigTable">路由表配置</Link></li>
             </ol>
 
             <hr/>
@@ -34,6 +36,7 @@ const Config = () => (
             <Route path="/RouteInfo" component={RouteInfo}/>
             <Route path="/Redirect" component={Redirect}/>
             <Route path="/NeedLogin" component={NeedLogin}/>
+            <Route path="/RouteConfigTable" component={RouteConfigTable}/>
         </div>
     </Router>
 )

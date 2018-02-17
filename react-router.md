@@ -651,6 +651,164 @@ this.props.history.push('/default')
 1. 进入受保护页面时，需要先检查一下登录信息；
 2. 登录和登出时，除了写入和清除登录信息之外，还需要进行一次路径跳转（登录 -> 受保护页面，受保护页面 -> 未登录时的默认页面）（如何重定向参照【10】）；
 
-<h3>12、</h3>
+<h3>12、路由配置</h3>
+
+简单来说，就是有一个对象，如下：
+
+```
+const RouteConfig = [
+    {
+        path: 'first',
+        component: First,
+        name: '第一个路由',
+        routes: [
+            {
+                path: '1',
+                component: ChildOne,
+                name: '1-1'
+            }
+        ]
+    },
+    {
+        path: 'second',
+        component: Second,
+        name: '第二个路由'
+    }
+]
+```
+
+解释：
+
+1. component 是组件；
+2. path 是该组件对应的 url；
+3. name 非必须，这里是为了省事，自动生成 Link 标签的描述文字才加的；
+4. routes 可选，是该组件的子组件路由信息。具体来说，就是将这个值传给路由的子组件，然后子组件就可以拿这个生成自己的子路由信息了；
+
+<br>
+单纯看这个比较麻烦，我们先来看一个函数吧：
+
+```
+const createRouter = (routes, props) => (
+    <Router>
+        <div>
+            {/* 自动生成 Link 标签 */}
+            {createLink(routes, props)}
+            <hr/>
+            {/* 自动生成 Route 标签 */}
+            {createRoute(routes, props)}
+        </div>
+    </Router>
+)
+createRouter(RouteConfig, props)
+```
+
+这个函数干了三件事：
+
+1. 创建了一个 Router 标签；
+2. 根据 routes （来源于上面的路由配置表），自动生成了多个 Link 标签；
+3. 以及多个 Route 标签；
+
+预期上，这两个生成标签的函数，他们生成的 Link 标签和 Route 标签是一一对应的；
+
+---
+
+然后我们再分别看这两个生成函数，先看第一个生成 Link 标签的：
+
+```
+const createLink = (routes, props) => (
+    <ol>
+        {
+            routes.map(route => (
+                <li key={route.path}>
+                    <Link to={`${props.match.url}/${route.path}`}>{route.name}</Link>
+                </li>
+            ))
+        }
+    </ol>
+)
+```
+
+注意，``createLink`` 传入的第一个参数，是一个数组（参考上面的 ``RouteConfig`` 变量）；
+
+遍历这个数组，生成一个 li 标签，内包裹一个 Link 标签，其 to 属性是当前 url（``props.match.url``），后面加上路由路径 ``route.path``，描述文字就是 ``route.name``。
+
+示例（map 返回数组的一个元素）：
+
+```
+<li key='first'>
+    <Link to={`/first`}>第一个路由</Link>
+</li>
+```
+
+最后结果就是自动生成了导航栏。
+
+---
+
+然后我们再看另外一个生成 Route 标签的函数：
+
+```
+const createRoute = (routes, props) => (
+    <React.Fragment>
+        {routes.map((route, i) => {
+            let obj = {
+                key: i,
+                ...route,
+                path: `${props.match.url}/${route.path}`,
+                component: props => {
+                    let obj = {routes: route.routes, ...props}
+                    return <route.component {...obj}/>
+                }
+            }
+            return <Route {...obj}/>
+        })}
+    </React.Fragment>
+)
+```
+
+懂了上面那个后，这个自然而言也很容易懂了。
+
+遍历 routes ，取出 component 属性（即该路径对应的组件），
+
+将当前子路由的路由配置表，如下：
+
+```
+routes: [
+    {
+        path: '1',
+        component: ChildOne,
+        name: '1-1'
+    }
+]
+```
+
+混合到路由信息里（见 ``obj.component`` 属性，如果看不懂，请参考上面【7】中，component 的属性是一个函数的那个示例）。
+
+这样，对应的子组件，就可以拿到路由配置表中，该组件的子路由信息了。
+
+具体举例来说，就是 First 这个组件，可以从 props 里取出以下数据：
+
+```
+routes: [
+    {
+        path: '1',
+        component: ChildOne,
+        name: '1-1'
+    }
+]
+```
+
+因此，子组件可以继续调用上面两个函数，来自动生成 Link 标签，和 Route 标签。
+
+---
+
+简单总结一下上面的过程：
+
+1. 调用函数 createRouter ，传参 路由配置表；
+2. createRouter 函数会调用 自动生成 Link 标签 和 自动生成 Route 标签的函数；
+3. createLink 函数，根据路由配置表，自动生成了当前层级的 Link 标签；
+4. createRoute 函数，根据路由配置表，自动生成了当前层级的 Route 标签；
+5. createRoute 函数，假如路由配置表某个对应组件，有 routes 属性，则自动将这个属性的值，传给了该组件，于是该组件可以拿到自己的，这一层级的子组件路由配置表；
+
+
 <h3>13、</h3>
 <h3>14、</h3>
