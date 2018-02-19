@@ -1,15 +1,19 @@
 /**
- * Created by 王冬 on 2018/2/18.
+ * Created by 王冬 on 2018/2/19.
  * QQ: 20004604
  * weChat: qq20004604
  * 功能说明：
- * redux 存储空间
+ *
  */
-import {combineReducers, createStore} from 'redux';
+import {combineReducers} from 'redux'
+import {ADD_TODO, SET_VISIBILITY_FILTER, TOGGLE_TODO, VisibilityFilters} from './actions'
 
-function visibilityFilter(state = 'SHOW_ALL', action) {
+const {SHOW_ALL} = VisibilityFilters
+
+function visibilityFilter(state = SHOW_ALL, action) {
+    console.log('visibilityFilter')
     switch (action.type) {
-        case 'SET_VISIBILITY_FILTER':
+        case SET_VISIBILITY_FILTER:
             return action.filter
         default:
             return state
@@ -17,8 +21,9 @@ function visibilityFilter(state = 'SHOW_ALL', action) {
 }
 
 function todos(state = [], action) {
+    console.log('todos')
     switch (action.type) {
-        case 'ADD_TODO':
+        case ADD_TODO:
             return [
                 ...state,
                 {
@@ -26,11 +31,11 @@ function todos(state = [], action) {
                     completed: false
                 }
             ]
-        case 'COMPLETE_TODO':
+        case TOGGLE_TODO:
             return state.map((todo, index) => {
                 if (index === action.index) {
                     return Object.assign({}, todo, {
-                        completed: true
+                        completed: !todo.completed
                     })
                 }
                 return todo
@@ -40,7 +45,9 @@ function todos(state = [], action) {
     }
 }
 
-let reducer = combineReducers({visibilityFilter, todos})
-let store = createStore(reducer)
+const todoApp = combineReducers({
+    visibilityFilter,
+    todos
+})
 
-export default store
+export default todoApp
