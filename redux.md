@@ -15,9 +15,10 @@ import {createStore} from 'redux';
 // 传说中的 Reducer
 function myReducer(state = [5, 4], action) {
     if (action.type === 'push') {
-        state.push(action.value)
+        return [...state, action.value]
+    } else {
+        return state
     }
-    return state
 }
 
 // store对象
@@ -53,16 +54,24 @@ end
 【state】
 
 1. 简单来说，就是值都是存这个里面的（上面 myReducer 函数里的参数 state）；
-2. 我们不能直接获得这个变量，一般是通过 action 来修改 state；
-3. 最后通过 getState 来获取整个 state（只有这样才能循环获取）；
-4. state 的循环：
-5. 第一次 reducer 执行时的默认值（在 createStore 时执行）；
-6. 第二次及以后， reducer 执行时传给参数一的值；
-7. 每次 reducer 执行完的返回值；
-8. getState 执行时的返回值；
+2. 我们不能直接获得这个变量，一般是通过 action 来让 state 变化；
+3. 注意，不能修改 state ！
+4. 假如 state 是一个数组，然后你需要给数组添加一个新的元素，请务必不要直接使用 push 来完成添加，应当像上面那样，返回一个新的 state；
+5. 如果不需要修改，则返回默认的 state ；
+6. 最后通过 getState 来获取新 state（只有这样才能循环获取）；
+7. state 的循环：
+8. 第一次 reducer 执行时的默认值（在 createStore 时执行）；
+9. 第二次及以后， reducer 执行时传给参数一的值；
+10 每次 reducer 执行完的返回值；
+11. getState 执行时的返回值；
 
 <br>
+<b>【state 的修改原则】</b>
 
+1. 不需要改变 state 时，返回原 state ；
+2. 需要修改 state 时，复制一个新的 state，在新的 state 上进行修改并返回新的 state。
+
+<br>
 【action】
 
 1. 上面 ``store.dispatch`` 里面的参数就是 action ；
@@ -115,9 +124,10 @@ import {createStore} from 'redux';
 // 传说中的 Reducer
 function myReducer(state = [5, 4], action) {
     if (action.type === 'push') {
-        state.push(action.value)
+        return [...state, action.value]
+    } else {
+        return state
     }
-    return state
 }
 
 // store对象
@@ -219,11 +229,102 @@ console.log(store.getState())   // {"First":{"text":"First","index":2},"Second":
 3. 多个 reducer 在组合之后，被 createStore ，此时 getState 返回的 state 是一个对象（树结构）；
 4. 这个 state ，是各个 reducer 以 kv 形式组合而成的。具体来说， key 是 combineReducers 时，每个 reducer 的 key ，而 value 是每个 reducer 的 state；
 5. 如单个 First 的 state 是 ``{"text": "First", "index": 1}``，那么组合后，新的 state 就为：``{"First": {"text": "First", "index": 1}}``；
+6. 每次执行 action 时，会依次执行每一个 reducer。例如你传入了符合 First 的 type ，但 js 实际执行中，并不可能知道你传入的 type 是符合哪一个 reducer ，所以他每个 reducer 都会执行；
+7. 正常来说，默认情况下（不符合任何一个 type ），应该返回默认的 state ，会比较合理（除非有特殊需求）；
 
 <br>
 如果不太明白，请将以上代码运行后，查看控制台，结合输出结果来理解；
 
-<h3>5、</h3>
+<h3>5、切分 action </h3>
+
+在【4】的基础上，我们将多个 reducer 混合到了一起。
+
+这带来一个问题，那就是当我们想要修改一个 state 时，会比较麻烦。例如：``store.dispatch({type: 'add', value: '123'})``
+
+这样不是不可以，但是问题在于，耦合度太高（即我需要知道 reducer 内部，符合我需求的 type 字段的值是什么，并且这个字段不能被更改）。
+
+在简单的小型应用中，这倒不是问题，但是面对大型应用的时候，这并不是一个好的方案。
+
+解决办法：
+
+1. 将 actions 单独封装到一个 js 文件中；
+2. 将 actions 的 type 变为常量；
+3. 在 reducer 里，type 的值取这个常量；
+4. 当我们要使用某个 action 时，调用这个常量作为 type 即可；
+5. 于是我们不需要关心 type 到底是什么值，只需要确保同一个 reducer 下，各个 type 不重复即可；
+6. 为了解决每次都要写 type 的问题，我们将生成 action 这个行为，封装成一个函数；
+7. 这个函数目的是生成一个 action ，入参是我们需要的变量；
+8. 这样输入一个变量，然后函数返回一个符合我们需要的 action ，再将这个 action 作为 dispatch 的参数传进去，就 ok 了；
+
+来一个最简单的示例：
+
+```
+// actions.js
+/*
+ * action 的 type 的常量
+ */
+export const ADD_ITEM = 'ADD_LIST';
+export const REMOVE_LAST_ITEM = 'REMOVE_LAST_ITEM'
+
+/*
+ * action 创建函数
+ */
+// 添加进 state
+export function addToList(item) {
+    return {type: ADD_ITEM, item}
+}
+
+// 移除最后一个添加的内容
+export function removeFromList() {
+    return {type: REMOVE_LAST_ITEM}
+}
+```
+
+
+```
+// app.js
+import {createStore} from 'redux'
+import {ADD_ITEM, addToList, REMOVE_LAST_ITEM, removeFromList} from './actions'
+
+function List(state = [], action) {
+    // 注意，没有修改原 state
+    if (action.type === ADD_ITEM) {
+        return [...state, action.item]
+    } else if (action.type === REMOVE_LAST_ITEM) {
+        let arr = [...state]
+        arr.pop()
+        return arr
+    } else {
+        return state;
+    }
+}
+
+let store = createStore(List)
+store.subscribe(() => {
+    console.log(store.getState())
+})
+store.dispatch(addToList('first'))
+store.dispatch(addToList('second'))
+store.dispatch(removeFromList())
+```
+
+输出结果：
+
+```
+["first"]
+["first", "second"]
+["first"]
+```
+
+分析：
+
+1. action.js 负责生成常量，并导出；
+2. action.js 里，封装了创造 action 的函数；
+3. app.js 里，写了 reducer ，reducer 在判断 action.type 时，直接判断的是引入的常量，而不是自己写的字符串；
+4. app.js 里，reducer 在 state 未修改时，返回默认 state；若修改，则返回全新的 state ；
+4. app.js 里，通过 addToList 和 removeFromList 生成 action ，但他只关心我要做什么，传入的是什么，并不关心实际 action 结构是什么；
+5. app.js 里，reducer 完全可以封装到另外一个 js 文件里，即用一个专门的 reducer.js 来管理 reducer，这样在复杂应用中，更加简单明了一些。
+
 <h3>6、</h3>
 <h3>7、</h3>
 <h3>8、</h3>

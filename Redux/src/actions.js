@@ -6,35 +6,22 @@
  *
  */
 /*
- * action 类型
+ * action 的 type 的常量
  */
 
-export const ADD_TODO = 'ADD_TODO';
-export const TOGGLE_TODO = 'TOGGLE_TODO'
-export const SET_VISIBILITY_FILTER = 'SET_VISIBILITY_FILTER'
-
-/*
- * 其它的常量
- */
-
-export const VisibilityFilters = {
-    SHOW_ALL: 'SHOW_ALL',
-    SHOW_COMPLETED: 'SHOW_COMPLETED',
-    SHOW_ACTIVE: 'SHOW_ACTIVE'
-}
+export const ADD_ITEM = 'ADD_LIST';
+export const REMOVE_LAST_ITEM = 'REMOVE_LAST_ITEM'
 
 /*
  * action 创建函数
  */
 
-export function addTodo(text) {
-    return {type: ADD_TODO, text}
+// 添加进 state
+export function addToList(item) {
+    return {type: ADD_ITEM, item}
 }
 
-export function toggleTodo(index) {
-    return {type: TOGGLE_TODO, index}
-}
-
-export function setVisibilityFilter(filter) {
-    return {type: SET_VISIBILITY_FILTER, filter}
+// 移除最后一个添加的内容
+export function removeFromList() {
+    return {type: REMOVE_LAST_ITEM}
 }
