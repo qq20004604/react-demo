@@ -1,17 +1,8 @@
-/**
- * Created by 王冬 on 2018/2/19.
- * QQ: 20004604
- * weChat: qq20004604
- * 功能说明：
- *
- */
-import {combineReducers} from 'redux'
-import {ADD_TODO, SET_VISIBILITY_FILTER, TOGGLE_TODO, VisibilityFilters} from './actions'
-
-const {SHOW_ALL} = VisibilityFilters
+import { combineReducers } from 'redux'
+import { ADD_TODO, TOGGLE_TODO, SET_VISIBILITY_FILTER, VisibilityFilters } from './actions'
+const { SHOW_ALL } = VisibilityFilters
 
 function visibilityFilter(state = SHOW_ALL, action) {
-    console.log('visibilityFilter')
     switch (action.type) {
         case SET_VISIBILITY_FILTER:
             return action.filter
@@ -21,7 +12,6 @@ function visibilityFilter(state = SHOW_ALL, action) {
 }
 
 function todos(state = [], action) {
-    console.log('todos')
     switch (action.type) {
         case ADD_TODO:
             return [
@@ -32,14 +22,13 @@ function todos(state = [], action) {
                 }
             ]
         case TOGGLE_TODO:
-            return state.map((todo, index) => {
-                if (index === action.index) {
-                    return Object.assign({}, todo, {
-                        completed: !todo.completed
-                    })
-                }
-                return todo
-            })
+            return [
+                ...state.slice(0, action.index),
+                Object.assign({}, state[action.index], {
+                    completed: true
+                }),
+                ...state.slice(action.index + 1)
+            ]
         default:
             return state
     }

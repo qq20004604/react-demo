@@ -1,27 +1,33 @@
-/**
- * Created by 王冬 on 2018/2/19.
- * QQ: 20004604
- * weChat: qq20004604
- * 功能说明：
- *
- */
 /*
- * action 的 type 的常量
+ * action 类型
  */
 
-export const ADD_ITEM = 'ADD_LIST';
-export const REMOVE_LAST_ITEM = 'REMOVE_LAST_ITEM'
+export const ADD_TODO = 'ADD_TODO';
+export const TOGGLE_TODO = 'TOGGLE_TODO';
+export const SET_VISIBILITY_FILTER = 'SET_VISIBILITY_FILTER'
+
+/*
+ * 其它的常量
+ */
+
+export const VisibilityFilters = {
+    SHOW_ALL: 'SHOW_ALL',
+    SHOW_COMPLETED: 'SHOW_COMPLETED',
+    SHOW_ACTIVE: 'SHOW_ACTIVE'
+};
 
 /*
  * action 创建函数
  */
 
-// 添加进 state
-export function addToList(item) {
-    return {type: ADD_ITEM, item}
+export function addTodo(text) {
+    return {type: ADD_TODO, text}
 }
 
-// 移除最后一个添加的内容
-export function removeFromList() {
-    return {type: REMOVE_LAST_ITEM}
+export function toggleTodo(index) {
+    return {type: TOGGLE_TODO, index}
+}
+
+export function setVisibilityFilter(filter) {
+    return {type: SET_VISIBILITY_FILTER, filter}
 }

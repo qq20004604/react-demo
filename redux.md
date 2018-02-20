@@ -1,3 +1,7 @@
+参考文献：
+
+[Redux 中文文档](http://cn.redux.js.org/)
+
 <h3>1、安装</h3>
 
 ```
@@ -160,6 +164,11 @@ after dispatch
 3. 回调函数里的 this，默认是 undefined；
 4. 回调函数里可以通过 store.getState() 来获取值；
 
+【停止监听】
+
+1. 停止监听很简单；
+2. ``let fn = store.subscribe(()=>{}) `` 会返回一个函数，执行一次这个函数即可停止监听；
+
 <h3>4、combineReducers 合并多个 reducer</h3>
 
 为什么要合并多个 reducer ？
@@ -176,8 +185,6 @@ after dispatch
 给出示例：
 
 ```
-
-
 function First(state = {text: 'First', index: 0}, action) {
     state.index++;
     return state;
@@ -325,7 +332,16 @@ store.dispatch(removeFromList())
 4. app.js 里，通过 addToList 和 removeFromList 生成 action ，但他只关心我要做什么，传入的是什么，并不关心实际 action 结构是什么；
 5. app.js 里，reducer 完全可以封装到另外一个 js 文件里，即用一个专门的 reducer.js 来管理 reducer，这样在复杂应用中，更加简单明了一些。
 
-<h3>6、</h3>
+<h3>6、Redux 和 React 结合使用</h3>
+
+>安装
+
+除了安装 redux 外，还要安装 react-redux
+
+```
+npm install --save react-redux
+```
+
 <h3>7、</h3>
 <h3>8、</h3>
 <h3>9、</h3>
