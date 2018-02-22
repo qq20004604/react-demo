@@ -5,13 +5,6 @@
  * 功能说明：
  * 路由信息表
  */
-/**
- * Created by 王冬 on 2018/2/13.
- * QQ: 20004604
- * weChat: qq20004604
- * 功能说明：
- * 基本DEMO
- */
 import React from "react";
 import {HashRouter as Router, Link, Route} from 'react-router-dom'
 
