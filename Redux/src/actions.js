@@ -24,8 +24,8 @@ export function addTodo(text) {
     return {type: ADD_TODO, text}
 }
 
-export function toggleTodo(index) {
-    return {type: TOGGLE_TODO, index}
+export function toggleTodo(item) {
+    return {type: TOGGLE_TODO, item}
 }
 
 export function setVisibilityFilter(filter) {

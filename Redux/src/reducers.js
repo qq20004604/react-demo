@@ -1,6 +1,7 @@
-import { combineReducers } from 'redux'
-import { ADD_TODO, TOGGLE_TODO, SET_VISIBILITY_FILTER, VisibilityFilters } from './actions'
-const { SHOW_ALL } = VisibilityFilters
+import {combineReducers} from 'redux'
+import {ADD_TODO, TOGGLE_TODO, SET_VISIBILITY_FILTER, VisibilityFilters} from './actions'
+
+const {SHOW_ALL} = VisibilityFilters
 
 function visibilityFilter(state = SHOW_ALL, action) {
     switch (action.type) {
@@ -22,12 +23,13 @@ function todos(state = [], action) {
                 }
             ]
         case TOGGLE_TODO:
+            let index = state.indexOf(action.item)
             return [
-                ...state.slice(0, action.index),
-                Object.assign({}, state[action.index], {
+                ...state.slice(0, index),
+                Object.assign({}, state[index], {
                     completed: true
                 }),
-                ...state.slice(action.index + 1)
+                ...state.slice(index + 1)
             ]
         default:
             return state
