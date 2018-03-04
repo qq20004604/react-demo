@@ -10,7 +10,7 @@
 
 [render和component的区别](http://blog.csdn.net/aqtata/article/details/76169974)
 
-<h3>1、React-router 安装</h3>
+<h3>0.1、React-router 安装</h3>
 
 >这里的版本号是 "react-router-dom": "^4.2.2"
 
@@ -28,7 +28,9 @@ npm install --save react-router-dom
 * react-router-redux React Router 和 Redux 的集成
 * react-router-config 静态路由配置的小助手
 
-<h3>2、基本DEMO</h3>
+<h3>1、基本DEMO</h3>
+
+[DEMO地址](https://github.com/qq20004604/react-demo/blob/master/react-router/src/1.baseDemo.js)
 
 > 参考 1.baseDemo.js
 
@@ -94,7 +96,9 @@ class BaseDemo extends React.Component {
 
 简单来说，就是 点击 Link 标签跳转 url，然后显示对应的 url 的组件。
 
-<h3>3、路由嵌套：</h3>
+<h3>2、路由嵌套：</h3>
+
+[DEMO地址](https://github.com/qq20004604/react-demo/blob/master/react-router/src/2.routingNested.js)
 
 > 参考 2.routingNested.js
 
@@ -172,7 +176,7 @@ class RoutingNested extends React.Component {
 }
 ```
 
-<h3>4、BrowserRouter 和 HashRouter</h3>
+<h3>3、BrowserRouter 和 HashRouter</h3>
 
 以上两个DEMO，都是 HashRouter，而非 BrowserRouter ，二者有所不同。
 
@@ -202,7 +206,9 @@ import {
 
 因为写服务器文件还比较麻烦，因此在之后的 DEMO 中，我们将主要使用 HashRouter 而不是 BrowserRouter。
 
-<h3>5、props</h3>
+<h3>4、props</h3>
+
+[DEMO地址](https://github.com/qq20004604/react-demo/blob/master/react-router/src/3.props.js)
 
 > 参考 3.props.js
 
@@ -324,7 +330,11 @@ class RoutingNested extends React.Component {
 
 具体示例参照 DEMO 里的 ``3.props.js``
 
-<h3>6、参数</h3>
+<h3>5、参数</h3>
+
+[DEMO地址](https://github.com/qq20004604/react-demo/blob/master/react-router/src/4.params.js)
+
+> 参考 4.params.js
 
 React路由取参数，有两种：
 
@@ -441,7 +451,11 @@ class RoutingNested extends React.Component {
 }
 ```
 
-<h3>7、父组件传 值 or 函数 给子组件</h3>
+<h3>6、父组件传 【值】 or 【函数】 给子组件</h3>
+
+[DEMO地址](https://github.com/qq20004604/react-demo/blob/master/react-router/src/5.fromParentComponent.js)
+
+>参考 5.fromParentComponent.js
 
 如果你已经熟悉了前面的内容，会知道以下结论：
 
@@ -565,7 +579,7 @@ class RoutingNested extends React.Component {
 
 
 
-<h3>8、path 和 url 的区别</h3>
+<h3>7、path 和 url 的区别</h3>
 
 在 match 属性中，有 path 和 url 属性，大部分时间他们是一样的，那么区别是什么呢？
 
@@ -576,7 +590,11 @@ class RoutingNested extends React.Component {
 1. url：``/Params/2/1``
 2. path：``/Params/2/:myParams``
 
-<h3>9、路由信息</h3>
+<h3>8、Link 标签 to 属性为对象时（路由信息传值）</h3>
+
+[DEMO地址](https://github.com/qq20004604/react-demo/blob/master/react-router/src/6.routeInfo.js)
+
+>参考 6.routeInfo.js
 
 在组件里，每个组件的路由数据，都是各自独立的。
 
@@ -585,6 +603,7 @@ class RoutingNested extends React.Component {
 1. match 属性的值，存储的是该 Route 标签的路由；
 2. location 属性的值，其中 url 和 path 不同 Route 组件中，值是相同的；
 
+<br>
 但【2】并不准确，准确的说，自带的 hash ， search ， pathname 这三个属性的值，是相同的；
 
 假如你在里面添加了其他数据，那么结果就有所不同了。
@@ -606,8 +625,78 @@ class RoutingNested extends React.Component {
 }}>示例1</Link>
 ```
 
+当路由信息匹配时（参照DEMO）：
 
-<h3>10、重定向</h3>
+1、父组件的路由信息为：
+
+```
+{
+    "match": {
+        "path": "/RouteInfo",
+        "url": "/RouteInfo",
+        "isExact": false,
+        "params": {}
+    },
+    "location": {
+        "pathname": "/RouteInfo/1",
+        "search": "",
+        "hash": ""
+    },
+    "history": {
+        "length": 9,
+        "action": "POP",
+        "location": {
+            "pathname": "/RouteInfo/1",
+            "search": "",
+            "hash": ""
+        }
+    }
+}
+```
+
+2、被传值的子组件的路由信息：
+
+```
+{
+    "match": {
+        "path": "/RouteInfo/1",
+        "url": "/RouteInfo/1",
+        "isExact": true,
+        "params": {}
+    },
+    "location": {
+        "pathname": "/RouteInfo/1",
+        "myState": "这是我自定义的变量",
+        "search": "",
+        "hash": ""
+    },
+    "history": {
+        "length": 24,
+        "action": "PUSH",
+        "location": {
+            "pathname": "/RouteInfo/1",
+            "myState": "这是我自定义的变量",
+            "search": "",
+            "hash": ""
+        }
+    }
+}
+```
+
+
+可以看到，被传值的子组件的路由信息，location 会多了一个属性。
+
+但是请注意，以下几种情况会导致失去这些信息：
+
+1. 刷新页面；
+2. 访问更深一层的子组件（因为信息被更新了）；
+3. 刷新后，访问相同的 url。举例来说，你访问了该 url，传值了也收到了，然后刷新页面，再点击该 url，是没有的。原因是相同 url 跳转；
+
+<h3>9、重定向</h3>
+
+[DEMO地址](https://github.com/qq20004604/react-demo/blob/master/react-router/src/7.redirect.js)
+
+>参考 7.redirect.js
 
 重定向有两种方式，第一种是通过 ``<Redirect>`` 标签实现，第二种是通过编程式导航方式实现。
 
@@ -626,7 +715,11 @@ this.props.history.push('/default')
 两个的效果是一样的
 
 
-<h3>11、登录拦截</h3>
+<h3>10、登录拦截</h3>
+
+[DEMO地址](https://github.com/qq20004604/react-demo/blob/master/react-router/src/8.needLogin.js)
+
+>参考 8.needLogin.js
 
 登录拦截说起来比较高大上，其实很简单。
 
@@ -651,7 +744,11 @@ this.props.history.push('/default')
 1. 进入受保护页面时，需要先检查一下登录信息；
 2. 登录和登出时，除了写入和清除登录信息之外，还需要进行一次路径跳转（登录 -> 受保护页面，受保护页面 -> 未登录时的默认页面）（如何重定向参照【10】）；
 
-<h3>12、路由配置</h3>
+<h3>11、路由配置</h3>
+
+[DEMO地址](https://github.com/qq20004604/react-demo/blob/master/react-router/src/9.routeConfigTable.js)
+
+>参考 9.routeConfigTable.js
 
 简单来说，就是有一个对象，如下：
 

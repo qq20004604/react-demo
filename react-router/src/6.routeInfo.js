@@ -13,18 +13,20 @@ const Child = props => <div>
     <p>子路由的属性</p>
     <pre>{JSON.stringify(props, undefined, 4)}</pre>
 </div>
+
 const First = props => <div>
     <p>路由【1】</p>
     <p>相对于父组件，location 增加了一个新属性 myState</p>
     <pre>{JSON.stringify(props, undefined, 4)}</pre>
     <Router>
         <div>
-            <li><Link to={`${props.match.url}/`}>子路由</Link></li>
+            <li><Link to={`${props.match.url}/1`}>更深一级子路由。<b>注意：点击我，父组件会失去传值的信息</b></Link></li>
             <hr/>
-            <Route path={`${props.match.url}/`} component={Child}/>
+            <Route path={`${props.match.url}/1`} component={Child}/>
         </div>
     </Router>
 </div>
+
 const Second = props => <div>
     <p>路由【2】</p>
     <pre>{JSON.stringify(props, undefined, 4)}</pre>
@@ -33,7 +35,7 @@ const Second = props => <div>
 class BaseDemo extends React.Component {
     render() {
         return <div>
-            <h3>2、路由信息是独立的</h3>
+            <h3>6、独立的路由信息</h3>
             <p>这里展现的是父组件的路由信息</p>
             <pre>{JSON.stringify(this.props, undefined, 4)}</pre>
             <Router>

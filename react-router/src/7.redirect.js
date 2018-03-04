@@ -19,7 +19,7 @@ class HaveRedirect extends React.Component {
 
     render() {
         return <div>
-            <button onClick={this.toRedirect}>编程式导航跳转方式</button>
+            <button onClick={this.toRedirect}>7、编程式导航跳转方式</button>
             <Router>
                 <div>
                     {/*  点击后，跳转 url 到 /redirect 这个路径；
