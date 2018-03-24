@@ -63,6 +63,10 @@ const config = {
     resolve: {
         // 省略后缀名
         extensions: ['.js']
+    },
+    externals: {
+        "react": "React",
+        "react-dom": "ReactDOM"
     }
 };
 
