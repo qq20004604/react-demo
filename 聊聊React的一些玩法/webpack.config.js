@@ -2,15 +2,13 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const webpack = require('webpack');
 const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
+const path = require('path');
 
 const config = {
     // 入口文件
     entry: {
         app: './src/app.js',
-        vendor: [
-            'react',
-            'react-dom',
-        ]
+        list: './src/list.js'
     },
     // 出口文件
     output: {
@@ -53,7 +51,13 @@ const config = {
     plugins: [
         // html 源文件
         new HtmlWebpackPlugin({
-            chunks: 'app',
+            filename: `./app.html`,
+            chunks: ['app'],
+            template: `./index.html`
+        }),
+        new HtmlWebpackPlugin({
+            filename: `./list.html`,
+            chunks: ['list'],
             template: `./index.html`
         }),
         // HMR 需要的两个插件

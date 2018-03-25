@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "scripts": {
     "build": "webpack --config webpack.config.js",
-    "dev": "webpack-dev-server --open --config webpack.config.js"
+    "dev": "webpack-dev-server --open http://localhost:8080/list.html --config webpack.config.js"
   },
   "devDependencies": {
     "babel-plugin-transform-runtime": "^6.23.0"
