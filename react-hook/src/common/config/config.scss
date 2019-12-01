@@ -1,0 +1,4 @@
+/*--字体颜色--*/
+@function vw($pxwidth) {
+    @return ($pxwidth / 640 * 100vw);
+}

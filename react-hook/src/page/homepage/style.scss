@@ -1,0 +1,188 @@
+@import '~common/config/config.scss';
+
+$footterHeight: vw(80);
+
+#box {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    font-size: vw(24);
+
+    button {
+        line-height: 1.5;
+        position: relative;
+        display: inline-block;
+        font-weight: 400;
+        white-space: nowrap;
+        text-align: center;
+        background-image: none;
+        border: 1px solid transparent;
+        -webkit-box-shadow: 0 2px 0 rgba(0, 0, 0, 0.015);
+        box-shadow: 0 2px 0 rgba(0, 0, 0, 0.015);
+        cursor: pointer;
+        -webkit-transition: all .3s cubic-bezier(.645, .045, .355, 1);
+        transition: all .3s cubic-bezier(.645, .045, .355, 1);
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        -ms-touch-action: manipulation;
+        touch-action: manipulation;
+        height: vw(60);
+        padding: 0 vw(15);
+        font-size: vw(24);
+        border-radius: vw(4);
+        color: rgba(0, 0, 0, 0.65);
+        background-color: #fff;
+        border-color: #d9d9d9;
+        color: #fff;
+        background-color: #1890ff;
+        border-color: #1890ff;
+        text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.12);
+        -webkit-appearance: button;
+        margin-right: vw(8);
+        margin-bottom: vw(12);
+        outline: 0;
+    }
+
+    .content {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        bottom: $footterHeight;
+        padding: vw(20);
+        overflow-x: hidden;
+        overflow-y: auto;
+
+        h1 {
+            height: vw(100);
+            line-height: vw(100);
+            width: 100%;
+            padding-left: vw(30);
+            font-size: vw(48);
+            color: #000;
+
+            .knife {
+                display: inline-block;
+                margin-top: vw(30);
+                width: vw(60);
+                height: vw(60);
+            }
+        }
+
+        .table {
+            border-collapse: collapse;
+            width: 100%;
+
+            th, td {
+                border: 1px solid #000;
+                font-size: vw(24);
+                height: vw(40);
+                line-height: vw(40);
+                padding: 0 vw(10);
+            }
+
+            td:first-child {
+                text-align: center;
+                width: 20vw;
+                vertical-align: top;
+            }
+
+        }
+
+        .is-mananger-push {
+            color: dodgerblue;
+        }
+
+        .add-item {
+            th, td {
+                padding: vw(10);
+            }
+
+            td:first-child {
+                text-align: center;
+                width: 30vw;
+                vertical-align: top;
+            }
+
+            .textarea, .input {
+                width: 60vw;
+                line-height: vw(48);
+                font-size: vw(24);
+            }
+        }
+
+        .notice {
+            line-height: vw(40);
+        }
+
+        .submit {
+            margin-top: vw(40);
+        }
+
+        .random {
+            margin-top: vw(20);
+            height: vw(60);
+            line-height: vw(60);
+            text-align: center;
+
+        }
+
+        .search {
+            margin-top: vw(20);
+
+            .row {
+                line-height: vw(40);
+                margin-top: vw(10);
+            }
+        }
+
+        .description {
+            margin-top: vw(60);
+            font-size: vw(24);
+            line-height: vw(40);
+        }
+
+        .wechat-img {
+            width: 100%;
+        }
+
+    }
+
+    .footter {
+        position: absolute;
+        bottom: 0;
+        height: $footterHeight;
+        color: #000;
+        left: 0;
+        width: 100%;
+        border-top: vw(4) solid #333;
+
+        .item {
+            display: inline-block;
+            float: left;
+            height: 100%;
+            width: 50%;
+            line-height: $footterHeight;
+            font-size: vw(32);
+            text-align: center;
+
+            .knife {
+                display: inline-block;
+                width: vw(30);
+                height: vw(30);
+            }
+        }
+
+        .item:first-child {
+            border-right: vw(4) solid #333;
+        }
+
+        .item.focus {
+            background-color: orange;
+        }
+    }
+}
